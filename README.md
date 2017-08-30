@@ -1,24 +1,9 @@
-# README
+# Using SF Public Safety Data
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Explorer/vsk2-um2x
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## To Do's
+* parse data
+* save to database
+* normalize with other police data sets
+* grab 2017 data: https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Current-Year-2017-/9v2m-8wqu
