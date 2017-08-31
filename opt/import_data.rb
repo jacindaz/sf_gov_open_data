@@ -13,13 +13,27 @@ class ImportSFPoliceData
   def json_from_file
     puts "reading the json file..."
     file = File.read("/Users/jzhong/Documents/jacinda/sf_police_data/opt/original_sf_gov_data.json")
-
     @results = JSON.parse(file)
   end
 
   def json_response
     response = Net::HTTP.get(URI(@url))
-    @json_response ||= JSON.parse(response)
+    puts "parsing json response..."
+    @results ||= JSON.parse(response)
+  end
+
+  def process
+    rollback
+    json_response
+    create_table
+
+    puts "inserting values into table..."
+    @connection.prepare('insert_statement', "insert into #{@table_name} (#{table_columns.join(', ')}) values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)")
+    @results.each do |row|
+      next if row.values.length != 18
+      @connection.exec_prepared('insert_statement', row.values)
+    end
+  end
 
   private
 
@@ -43,3 +57,5 @@ class ImportSFPoliceData
   end
 end
 
+i = ImportSFPoliceData.new
+i.process
