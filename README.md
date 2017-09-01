@@ -1,6 +1,7 @@
 # Using SF Public Safety Data
 
 https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Explorer/vsk2-um2x
+https://datasf.org/showcase/
 
 ## To Do's
 * parse data
