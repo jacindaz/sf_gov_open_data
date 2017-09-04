@@ -10,7 +10,7 @@ class CreateTablePoliceIncidents < ActiveRecord::Migration[5.1]
       t.time :time, null: false
       t.string :address, null: false
 
-      t.integer :police_department_district_id, null: false
+      t.integer :police_department_district_id, limit: 8, null: false
       t.string :police_department_district_name, null: false
       t.string :resolution, null: false
 

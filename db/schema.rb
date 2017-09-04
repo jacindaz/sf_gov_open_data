@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20170904200124) do
     t.date "date", null: false
     t.time "time", null: false
     t.string "address", null: false
-    t.integer "police_department_district_id", null: false
+    t.bigint "police_department_district_id", null: false
     t.string "police_department_district_name", null: false
     t.string "resolution", null: false
     t.string "x_coordinate"
