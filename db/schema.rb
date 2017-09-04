@@ -10,9 +10,48 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 20170904200124) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "original_sf_gov_data", id: :serial, force: :cascade do |t|
+    t.string "computed_region_bh8s_q3mv", limit: 255
+    t.string "computed_region_fyvs_ahh9", limit: 255
+    t.string "computed_region_p5aj_wyqh", limit: 255
+    t.string "computed_region_rxqg_mtj9", limit: 255
+    t.string "computed_region_yftq_j783", limit: 255
+    t.string "address", limit: 255
+    t.string "category", limit: 255
+    t.string "date", limit: 255
+    t.string "dayofweek", limit: 255
+    t.string "descript", limit: 255
+    t.string "incidntnum", limit: 255
+    t.string "location", limit: 255
+    t.string "pddistrict", limit: 255
+    t.string "pdid", limit: 255
+    t.string "resolution", limit: 255
+    t.string "time", limit: 255
+    t.string "x", limit: 255
+    t.string "y", limit: 255
+  end
+
+  create_table "police_incidents", force: :cascade do |t|
+    t.integer "incident_number", null: false
+    t.string "category", null: false
+    t.text "description", null: false
+    t.string "day_of_week", null: false
+    t.date "date", null: false
+    t.time "time", null: false
+    t.string "address", null: false
+    t.integer "police_department_district_id", null: false
+    t.string "police_department_district_name", null: false
+    t.string "resolution", null: false
+    t.string "x_coordinate"
+    t.string "y_coordinate"
+    t.point "location"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
 end
