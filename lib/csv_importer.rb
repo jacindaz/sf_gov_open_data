@@ -8,8 +8,10 @@ class CsvImporter
 
   def process
     PoliceIncident.transaction do
+      puts "Processing csv...."
       result = CSV.read(@file_path, headers: :downcase, converters: :all, header_converters: :downcase)
 
+      puts "Save police_incident objects..."
       result.each do |row|
         new_pi = PoliceIncident.new(
           incident_number: row["incidntnum"].to_i,
@@ -28,7 +30,11 @@ class CsvImporter
         )
 
         new_pi.save!
+
+        puts "."
       end
+
+      puts "Completed uploading!"
     end
   end
 end
