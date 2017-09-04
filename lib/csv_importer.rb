@@ -9,10 +9,10 @@ class CsvImporter
   def process
     PoliceIncident.transaction do
       puts "Processing csv...."
-      result = CSV.read(@file_path, headers: :downcase, converters: :all, header_converters: :downcase)
 
-      puts "Save police_incident objects..."
-      result.each do |row|
+      CSV.foreach(@file_path, headers: :downcase, converters: :all, header_converters: :downcase) do |row|
+        row = row.to_h
+
         new_pi = PoliceIncident.new(
           incident_number: row["incidntnum"].to_i,
           category: row["category"].downcase,
@@ -26,12 +26,11 @@ class CsvImporter
           x_coordinate: row["x"].to_i,
           y_coordinate: row["y"].to_i,
           location: row["location"],
-          police_department_district_id: row["pdid"].to_i,
+          police_department_district_id: row["pdid"].to_i
         )
 
         new_pi.save!
-
-        puts "."
+        print "." if $. % 500 == 0
       end
 
       puts "Completed uploading!"
