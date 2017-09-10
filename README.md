@@ -1,3 +1,6 @@
+[![Code Climate](https://codeclimate.com/github/codeclimate/codeclimate/badges/gpa.svg)](https://codeclimate.com/github/codeclimate/codeclimate)
+[ ![Codeship Status for jacindaz/sf_police_data](https://app.codeship.com/projects/c8866160-75ad-0135-b3ad-0ebb57710284/status?branch=master)](https://app.codeship.com/projects/244281)
+
 # Using SF Public Safety Data
 
 https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Explorer/vsk2-um2x
