@@ -49,7 +49,6 @@ ActiveRecord::Schema.define(version: 20170904200124) do
     t.string "resolution", null: false
     t.string "x_coordinate"
     t.string "y_coordinate"
-    t.point "location"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

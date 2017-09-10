@@ -14,5 +14,4 @@ class PoliceIncident < ActiveRecord::Base
 
   validates :x_coordinate, presence: true
   validates :y_coordinate, presence: true
-  validates :location, presence: true
 end

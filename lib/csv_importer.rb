@@ -25,7 +25,6 @@ class CsvImporter
           address: row["address"].capitalize,
           x_coordinate: row["x"].to_i,
           y_coordinate: row["y"].to_i,
-          location: row["location"],
           police_department_district_id: row["pdid"].to_i
         )
 

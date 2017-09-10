@@ -16,7 +16,6 @@ class CreateTablePoliceIncidents < ActiveRecord::Migration[5.1]
 
       t.string :x_coordinate, presence: true
       t.string :y_coordinate, presence: true
-      t.point :location, presence: true
 
       t.timestamps
     end
