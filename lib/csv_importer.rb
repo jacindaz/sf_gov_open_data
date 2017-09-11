@@ -10,10 +10,13 @@ class CsvImporter
     PoliceIncident.transaction do
       puts "Processing csv...."
 
+      built_objects = []
+
       CSV.foreach(@file_path, headers: :downcase, converters: :all, header_converters: :downcase) do |row|
         row = row.to_h
 
-        new_pi = PoliceIncident.new(
+
+        new_pi = {
           incident_number: row["incidntnum"].to_i,
           category: row["category"].downcase,
           description: row["descript"].capitalize,
@@ -23,13 +26,19 @@ class CsvImporter
           police_department_district_name: row["pddistrict"].capitalize,
           resolution: row["resolution"].downcase,
           address: row["address"].capitalize,
-          x_coordinate: row["x"].to_i,
-          y_coordinate: row["y"].to_i,
+          x_coordinate: row["x"],
+          y_coordinate: row["y"],
           police_department_district_id: row["pdid"].to_i
-        )
+        }
 
-        new_pi.save!
-        print "." if $. % 500 == 0
+        built_objects << new_pi
+
+        if $. % 500 == 0
+          HardWorker.perform_async(built_objects)
+
+          print "."
+          built_objects = []
+        end
       end
 
       puts "Completed uploading!"
