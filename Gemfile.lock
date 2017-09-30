@@ -203,6 +203,7 @@ PLATFORMS
 
 DEPENDENCIES
   capybara (~> 2.13)
+  concurrent-ruby
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   pg (~> 0.18)
