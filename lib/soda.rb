@@ -1,2 +1,2 @@
-client = SODA::Client.new({:domain => "data.sfgov.org"})
-client.get("cuks-n6tp", { "$limit" => 1, "$order" => { "DESC" => "date" }})
+client = SODA::Client.new({:domain => "data.sfgov.org", app_token: Rails.application.secrets.soda_app_token})
+data = client.get("5cei-gny5", { "$limit" => 10})
