@@ -1,28 +1,24 @@
 <h4>Eviction Notices</h4>
-<table>
-<thead>
-  <tr>
-      <th>Name</th>
-      <th>Item Name</th>
-      <th>Item Price</th>
-  </tr>
-</thead>
 
-<tbody>
-  <tr>
-    <td>Alvin</td>
-    <td>Eclair</td>
-    <td>$0.87</td>
-  </tr>
-  <tr>
-    <td>Alan</td>
-    <td>Jellybean</td>
-    <td>$3.76</td>
-  </tr>
-  <tr>
-    <td>Jonathan</td>
-    <td>Lollipop</td>
-    <td>$7.00</td>
-  </tr>
-</tbody>
+<table>
+  <thead>
+    <tr>
+        <th>eviction_id</th>
+        <th>address</th>
+        <th>city</th>
+        <th>state</th>
+        <th>file_date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @evictions.each do |eviction| %>
+      <tr>
+        <td><%= eviction.eviction_id %></td>
+        <td><%= eviction.address %></td>
+        <td><%= eviction.city %></td>
+        <td><%= eviction.state %></td>
+        <td><%= eviction.file_date %></td>
+      </tr>
+    <% end %>
+  </tbody>
 </table>
