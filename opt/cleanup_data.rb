@@ -34,7 +34,15 @@ class CleanupData
       puts "Didn't update anything, #{column_name} is not a boolean column."
     end
   end
-end
 
-c = CleanupData.new('sf_police_data_development', 'eviction_notices')
-c.alter_column_to_bool('breach')
+  def get_table_column_names
+    sql = "
+      SELECT column_name
+      FROM information_schema.columns
+      WHERE table_schema = 'public'
+      AND table_name='#{@table_name}'
+    "
+    results = @connection.exec(sql)
+    results.map(&:values).flatten
+  end
+end
