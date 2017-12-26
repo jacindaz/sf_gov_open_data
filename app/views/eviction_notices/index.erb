@@ -1,0 +1,30 @@
+<h4>Eviction Notices</h4>
+
+<table>
+  <thead>
+    <tr>
+        <th>eviction_id</th>
+        <th>address</th>
+        <th>file_date</th>
+        <th>supervisor_district</th>
+        <th>non_payment</th>
+        <th>illegal_use</th>
+        <th>location</th>
+        <th>neighborhoods___analysis_boundaries</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @evictions.each do |eviction| %>
+      <tr>
+        <td><%= eviction.eviction_id %></td>
+        <td><%= eviction.address %></td>
+        <td><%= eviction.file_date %></td>
+        <td><%= eviction.supervisor_district %></td>
+        <td><%= eviction.non_payment %></td>
+        <td><%= eviction.illegal_use %></td>
+        <td><%= eviction.location %></td>
+        <td><%= eviction.neighborhoods___analysis_boundaries %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
