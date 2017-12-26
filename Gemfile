@@ -39,6 +39,7 @@ group :development, :test do
   gem 'selenium-webdriver'
   gem 'pry-rails'
   gem 'awesome_print'
+  gem 'rspec-rails', '~> 3.6'
 end
 
 group :development do
