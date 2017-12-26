@@ -16,3 +16,11 @@ https://datasf.org/showcase/
 * save to database
 * normalize with other police data sets
 * grab 2017 data: https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Current-Year-2017-/9v2m-8wqu
+
+## Resources and Links
+* https://data.sfgov.org/browse?category=Housing+and+Buildings
+* https://data.sfgov.org/Housing-and-Buildings/Eviction-Notices/5cei-gny5
+* https://github.com/socrata/soda-ruby
+* https://www.opendatanetwork.com/dataset/data.sfgov.org/5cei-gny5
+* https://socratadiscovery.docs.apiary.io/#reference/0/text-search
+* https://dev.socrata.com/docs/queries/
