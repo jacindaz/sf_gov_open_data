@@ -29,7 +29,6 @@ gem 'jbuilder', '~> 2.5'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 gem 'sidekiq'
-gem 'soda-ruby', :require => 'soda'
 gem 'materialize-sass'
 
 group :development, :test do
