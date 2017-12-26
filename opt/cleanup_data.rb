@@ -12,9 +12,9 @@ class CleanupData
 
     results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
     boolean_strings = results.map(&:values).flatten
-    boolean_strings.any?{ |x| possible_boolean_strings.include?(x) }
+    is_bool_column = boolean_strings.any?{ |x| possible_boolean_strings.include?(x) }
 
-    if boolean_strings
+    if is_bool_column
       alter_and_update = "
         ALTER TABLE #{@table_name}
         ALTER #{column_name} TYPE bool
