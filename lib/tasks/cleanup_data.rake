@@ -8,5 +8,6 @@ task :cleanup_data, [:database_name, :table_name] => :environment do |_, args|
 
   table_columns.each do |column_name|
     cleanup_data.alter_column_to_bool(column_name)
+    cleanup_data.alter_column_to_date(column_name)
   end
 end
