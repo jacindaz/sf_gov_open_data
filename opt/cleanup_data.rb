@@ -35,6 +35,12 @@ class CleanupData
     end
   end
 
+  def alter_column_to_date(column_name)
+    results = @connection.exec("select distinct #{column_name} from public.#{@table_name} where #{column_name} is not null and #{column_name} != '';")
+    date_strings = results.map(&:values).flatten
+    all_values_are_dates = date_strings.all?{ |string| string.scan(/\d+\/\d+\/\d+/).first == string }
+  end
+
   def get_table_column_names
     sql = "
       SELECT column_name
