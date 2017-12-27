@@ -1,5 +1,11 @@
 <h4>Eviction Notices</h4>
 
+<h5>Query</h5>
+<%= form_tag('/eviction_notices/run_query', method: :post) do %>
+  <%= text_area_tag :query %>
+  <%= submit_tag "Run query" %>
+<% end %>
+
 <table>
   <thead>
     <tr>
