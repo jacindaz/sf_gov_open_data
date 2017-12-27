@@ -1,4 +1,4 @@
-class PoliceIncident < ActiveRecord::Base
+class PoliceIncident < ApplicationRecord
   validates :incident_number, numericality: true
   validates :category, presence: true
   validates :description, presence: true
