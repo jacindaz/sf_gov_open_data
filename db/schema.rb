@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 20171227001909) do
     t.text "city"
     t.text "state"
     t.text "eviction_notice_source_zipcode"
-    t.text "file_date"
+    t.date "file_date"
     t.boolean "non_payment", null: false
     t.boolean "breach", null: false
     t.boolean "nuisance", null: false
@@ -41,7 +41,7 @@ ActiveRecord::Schema.define(version: 20171227001909) do
     t.boolean "lead_remediation", null: false
     t.boolean "development", null: false
     t.boolean "good_samaritan_ends", null: false
-    t.text "constraints_date"
+    t.date "constraints_date"
     t.text "supervisor_district"
     t.text "neighborhoods___analysis_boundaries"
     t.text "location"
