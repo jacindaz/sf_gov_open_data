@@ -1,5 +1,6 @@
-require 'csv'
-require_relative '../app/models/police_incident'
+require "csv"
+require_relative "../app/models/application_record" # model needs ApplicationRecord
+require_relative "../app/models/police_incident"
 
 class CsvImporter
   def initialize(file_path)
@@ -25,7 +26,6 @@ class CsvImporter
           address: row["address"].capitalize,
           x_coordinate: row["x"].to_i,
           y_coordinate: row["y"].to_i,
-          location: row["location"],
           police_department_district_id: row["pdid"].to_i
         )
 

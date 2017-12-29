@@ -1,2 +1,2 @@
-class EvictionNotice < ActiveRecord::Base
+class EvictionNotice < ApplicationRecord
 end
