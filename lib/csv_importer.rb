@@ -1,5 +1,6 @@
-require 'csv'
-require_relative '../app/models/police_incident'
+require "csv"
+require_relative "../app/models/application_record" # model needs ApplicationRecord
+require_relative "../app/models/police_incident"
 
 class CsvImporter
   def initialize(file_path)
