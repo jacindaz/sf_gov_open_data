@@ -14,5 +14,4 @@ class PoliceIncident < ApplicationRecord
 
   validates :x_coordinate, presence: true
   validates :y_coordinate, presence: true
-  validates :location, presence: true
 end
