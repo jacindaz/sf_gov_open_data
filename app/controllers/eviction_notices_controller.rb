@@ -1,11 +1,12 @@
 class EvictionNoticesController < ApplicationController
   def index
     @evictions = EvictionNotice.limit(10)
+    @query = Query.new
   end
 
   def show
-    query = Query.find(params[:id])
-    query_results = query.results
+    @query = Query.find(params[:id])
+    query_results = @query.results
     @evictions = EvictionNotice.where(eviction_id: query_results)
 
     render :index
