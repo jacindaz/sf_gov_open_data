@@ -9,7 +9,7 @@ class EvictionNoticesController < ApplicationController
     query_results = @query.results
     @evictions = EvictionNotice.where(eviction_id: query_results)
 
-    render :index
+    render :index, collection: @evictions
   end
 
   def run_query
@@ -17,6 +17,7 @@ class EvictionNoticesController < ApplicationController
     results = ActiveRecord::Base.connection.exec_query(query_params)
     row_ids = results.rows.map(&:first)
     @evictions = EvictionNotice.where(eviction_id: row_ids)
+    @query = Query.new(query: params[:query], results: [])
 
     render :index, collection: @evictions
   end

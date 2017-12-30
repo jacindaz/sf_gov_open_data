@@ -1,9 +1,10 @@
 <h4>Eviction Notices</h4>
 
 <h5>Query</h5>
-<%= form_for @query, url: run_query_eviction_notices_path do |f| %>
-  <%= f.text_area :query, value: @query.query %>
-  <%= f.submit "Run query" %>
+<%= form_tag('/eviction_notices/run_query', method: :post) do %>
+  <%= text_area_tag :query, @query.query %>
+  <%= submit_tag "Run query" %>
+  <%= submit_tag "Save query", formaction: queries_path(@query) %>
 <% end %>
 
-<%= render partial: 'eviction_notices', locals: { evictions: @evictions} %>
+<%= render partial: 'eviction_notices/eviction_notices', locals: { evictions: @evictions} %>

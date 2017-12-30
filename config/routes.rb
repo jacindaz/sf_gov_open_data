@@ -4,4 +4,6 @@ Rails.application.routes.draw do
   resources :eviction_notices, only: [:index, :show] do
     collection { post :run_query }
   end
+
+  resources :queries, only: [:create]
 end
