@@ -1,10 +1,20 @@
 <h4>Eviction Notices</h4>
 
 <h5>Query</h5>
+
+<% if flash.notice %>
+  <div style="color: red;margin: 10px 0px;"><%= flash.notice %></div>
+<% end %>
+
 <%= form_tag('/eviction_notices/run_query', method: :post) do %>
   <%= text_area_tag :query, @query.query %>
   <%= submit_tag "Run query" %>
-  <%= submit_tag "Save query", formaction: queries_path(@query) %>
+
+  <% if flash.notice %>
+    <%= submit_tag "Save query", hidden: true %>
+  <% else %>
+    <%= submit_tag "Save query", formaction: queries_path(@query) %>
+  <% end %>
 <% end %>
 
 <%= render partial: 'eviction_notices/eviction_notices', locals: { evictions: @evictions} %>
