@@ -11,7 +11,12 @@ https://datasf.org/showcase/
 * switch to using new bundler filenames, Gemfile => gems.rb, Gemfile.lock => gems.locked
 (https://depfu.com/blog/2017/09/06/gemfiles-new-clothes)
 
+
 ## To Do's
+* refactor: do i really need a `QueriesController` ?
+* pagination
+* add primary key to `eviction_notices` table
+* tests for importing eviction notices csv data
 * parse data
 * save to database
 * normalize with other police data sets
