@@ -210,7 +210,7 @@ PLATFORMS
 DEPENDENCIES
   awesome_print
   capybara (~> 2.13)
-  factory_bot_rails
+  factory_bot_rails (~> 4.0)
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   materialize-sass

@@ -40,7 +40,7 @@ group :development, :test do
   gem 'pry-rails'
   gem 'awesome_print'
   gem 'rspec-rails', '~> 3.6'
-  gem 'factory_bot_rails', require: false
+  gem "factory_bot_rails", "~> 4.0"
 end
 
 group :development do
