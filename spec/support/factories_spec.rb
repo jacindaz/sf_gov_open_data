@@ -1,7 +1,7 @@
 # /spec/support/factories_spec.rb
 
 # If using RSpec 2.x (or if not using Rails), require `spec_helper` instead
-require 'spec_helper'
+require 'rails_helper'
 
 # If using RSpec 2.x, remove `RSpec.`
 RSpec.describe "Factory Bot" do
