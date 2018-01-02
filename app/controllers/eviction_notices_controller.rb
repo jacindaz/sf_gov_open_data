@@ -48,6 +48,6 @@ class EvictionNoticesController < ApplicationController
   def valid_query
     # hmm, should i sanitize by not allowing drop/delete
     # or sanitize by only allowing selects/with/etc ??
-    !Query::INVALID_SQL.any?{ |invalid| query_params.include?(invalid) }
+    Query::INVALID_SQL.none?{ |invalid| query_params.include?(invalid) }
   end
 end

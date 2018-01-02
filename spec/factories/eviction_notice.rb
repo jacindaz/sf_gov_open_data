@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :eviction_notice do
-    sequence :eviction_id { |n| "eviction_id_#{n}"}
-    sequence :address { |n| "#{n} Hayes St"}
-    city 'San Francisco'
-    state 'CA'
+    sequence(:eviction_id) { |n| "eviction_id_#{n}"}
+    sequence(:address) { |n| "#{n} Hayes St"}
+    city "San Francisco"
+    state "CA"
     file_date Date.today
 
     non_payment false

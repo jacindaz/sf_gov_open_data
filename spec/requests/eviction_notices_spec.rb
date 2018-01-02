@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe "EvictionNotices", type: :request do
   describe "GET /eviction_notices" do
