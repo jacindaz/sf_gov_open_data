@@ -1,5 +1,5 @@
-require 'pg'
-require 'pry'
+require "pg"
+require "pry"
 
 class CleanupData
   def initialize(database_name, table_name)

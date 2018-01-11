@@ -15,7 +15,6 @@ https://datasf.org/showcase/
 ## To Do's
 * refactor: do i really need a `QueriesController` ?
 * pagination
-* add primary key to `eviction_notices` table
 * tests for importing eviction notices csv data
 * parse data
 * save to database
