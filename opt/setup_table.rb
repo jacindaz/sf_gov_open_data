@@ -1,6 +1,6 @@
-require 'pg'
-require 'pry'
-require 'logger'
+require "pg"
+require "pry"
+require "logger"
 
 class SetupTable
   def initialize(database_name, new_table_name, copied_table_name)
@@ -24,7 +24,6 @@ class SetupTable
     else
       @logger.error("Table #{@new_table_name} was unable to be created. Boooo.")
     end
-
   end
 
   def add_primary_key
