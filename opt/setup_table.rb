@@ -9,6 +9,9 @@ class SetupTable
     @copied_table_name = copied_table_name
 
     @logger = Logger.new(STDOUT)
+    @error_logger = Logger.new(
+      File.open("setup_table_errors.log", File::WRONLY | File::APPEND | File::CREAT)
+    )
   end
 
   def copy_table
@@ -23,6 +26,7 @@ class SetupTable
       @logger.info("Table: #{table_exists['table_name']}, Schema: #{table_exists['table_schema']}, Database: #{table_exists['table_catalog']}")
     else
       @logger.error("Table #{@new_table_name} was unable to be created. Boooo.")
+      @error_logger.error("Table #{@new_table_name} was unable to be created. Boooo.")
     end
   end
 
