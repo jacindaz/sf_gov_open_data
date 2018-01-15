@@ -1,6 +1,7 @@
 class EvictionNoticesController < ApplicationController
   def index
-    @evictions = EvictionNotice.limit(10)
+    @evictions = EvictionNotice.order(:state).page(params[:page]).without_count
+
     @query = Query.new
   end
 
