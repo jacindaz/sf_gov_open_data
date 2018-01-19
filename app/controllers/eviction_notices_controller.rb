@@ -1,14 +1,13 @@
 class EvictionNoticesController < ApplicationController
   def index
-    @evictions = EvictionNotice.order(:state).page(params[:page]).without_count
-
+    @evictions = paginate_evictions(EvictionNotice.order(:state))
     @query = Query.new
   end
 
   def show
     @query = Query.find(params[:id])
     query_results = @query.results
-    @evictions = EvictionNotice.where(eviction_id: query_results)
+    @evictions = paginate_evictions(EvictionNotice.where(eviction_id: query_results))
 
     render :index, collection: @evictions
   end
@@ -16,21 +15,35 @@ class EvictionNoticesController < ApplicationController
   def run_query
     @query = Query.new(query: query_params, results: [])
 
-    if valid_query
+    begin
       results = ActiveRecord::Base.connection.exec_query(query_params)
-      row_ids = results.rows.map(&:first)
-      @evictions = EvictionNotice.where(eviction_id: row_ids)
+    rescue ActiveRecord::StatementInvalid
+      results = nil
+      flash[:notice] = "Query syntax is invalid."
+    end
+
+    if !valid_query
+      flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
+      @evictions = EvictionNotice.none
+
+      render :index, collection: @evictions
+    elsif results.nil?
+      @evictions = EvictionNotice.none
 
       render :index, collection: @evictions
     else
-      flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
-      @evictions = EvictionNotice.none
+      row_ids = results.rows.map(&:first)
+      @evictions = paginate_evictions(EvictionNotice.where(eviction_id: row_ids))
 
       render :index, collection: @evictions
     end
   end
 
   private
+
+  def paginate_evictions(evictions)
+    evictions.page(params[:page]).without_count
+  end
 
   def query_params
     params[:query]
