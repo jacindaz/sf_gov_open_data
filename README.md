@@ -14,6 +14,7 @@ https://datasf.org/showcase/
 
 ## To Do's
 * refactor: do i really need a `QueriesController` ?
+* queue query jobs to sidekiq
 * pagination
 * tests for importing eviction notices csv data
 * parse data
