@@ -9,9 +9,7 @@ class CleanupData
 
   def alter_column_to_bool(column_name)
     possible_boolean_strings = ["FALSE", "false", "f", "TRUE", "true", "t"]
-
-    results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
-    boolean_strings = results.map(&:values).flatten
+    boolean_strings = column_values(column_name)
 
     is_bool_column = boolean_strings.any?{ |x| possible_boolean_strings.include?(x) }
 
@@ -33,21 +31,10 @@ class CleanupData
   end
 
   def alter_column_to_int(column_name)
-    results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
-    strings_maybe_numbers = results.map(&:values).flatten
-    is_integer_column = strings_maybe_numbers.all?{ |string| true if Integer(string) rescue false }
+    strings_maybe_integers = column_values(column_name)
+    column_type = calculate_integer_lengths(strings_maybe_integers)
 
-    if is_integer_column
-      max_bits = strings_maybe_numbers.max{ |string| string.to_i.to_s(2).length }.length
-
-      column_type = if max_bits <= 2
-                      "smallint"
-                    elsif max_bits <= 4
-                      "integer"
-                    elsif max_bits <= 8
-                      "bigint"
-                    end
-
+    if integer_column?(strings_maybe_integers)
       alter_and_update = "ALTER TABLE #{@table_name}
                           ALTER #{column_name} TYPE #{column_type}
                           USING CAST(#{column_name} as #{column_type}) "
@@ -67,5 +54,28 @@ class CleanupData
     "
     results = @connection.exec(sql)
     results.map(&:values).flatten
+  end
+
+  private
+
+  def column_values(column_name)
+    results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
+    results.map(&:values).flatten
+  end
+
+  def integer_column?(values)
+    values.all?{ |string| true if Integer(string) rescue false }
+  end
+
+  def calculate_integer_lengths(values)
+    max_bits = values.max{ |string| string.to_i.to_s(2).length }.length
+
+    if max_bits <= 2
+      "smallint"
+    elsif max_bits <= 4
+      "integer"
+    elsif max_bits <= 8
+      "bigint"
+    end
   end
 end
