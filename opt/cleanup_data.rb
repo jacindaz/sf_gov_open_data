@@ -26,10 +26,6 @@ class CleanupData
       "
       @connection.exec(alter_and_update)
       puts "Updated column #{column_name}"
-
-      add_not_null_constraint = "ALTER TABLE #{@table_name} ALTER #{column_name} SET NOT NULL"
-      @connection.exec(add_not_null_constraint)
-      puts "Added not null constraint to #{column_name}\n"
     else
       puts "Didn't update anything, #{column_name} is not a boolean column.\n"
     end
