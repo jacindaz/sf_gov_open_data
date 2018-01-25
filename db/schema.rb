@@ -10,38 +10,50 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171227001909) do
+ActiveRecord::Schema.define(version: 20180125005809) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "eviction_notices", id: false, force: :cascade do |t|
+  create_table "data_sources", force: :cascade do |t|
+    t.string "title", null: false
+    t.string "data_sf_uuid", null: false
+    t.string "url", null: false
+    t.string "table_name"
+    t.date "date_downloaded", null: false
+    t.date "data_freshness_date", null: false
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "eviction_notices", id: :serial, force: :cascade do |t|
     t.text "eviction_id"
     t.text "address"
     t.text "city"
     t.text "state"
     t.text "eviction_notice_source_zipcode"
-    t.date "file_date"
-    t.boolean "non_payment", null: false
-    t.boolean "breach", null: false
-    t.boolean "nuisance", null: false
-    t.boolean "illegal_use", null: false
-    t.boolean "failure_to_sign_renewal", null: false
-    t.boolean "access_denial", null: false
-    t.boolean "unapproved_subtenant", null: false
-    t.boolean "owner_move_in", null: false
-    t.boolean "demolition", null: false
-    t.boolean "capital_improvement", null: false
-    t.boolean "substantial_rehab", null: false
-    t.boolean "ellis_act_withdrawal", null: false
-    t.boolean "condo_conversion", null: false
-    t.boolean "roommate_same_unit", null: false
-    t.boolean "other_cause", null: false
-    t.boolean "late_payments", null: false
-    t.boolean "lead_remediation", null: false
-    t.boolean "development", null: false
-    t.boolean "good_samaritan_ends", null: false
-    t.date "constraints_date"
+    t.text "file_date"
+    t.text "non_payment"
+    t.text "breach"
+    t.text "nuisance"
+    t.text "illegal_use"
+    t.text "failure_to_sign_renewal"
+    t.text "access_denial"
+    t.text "unapproved_subtenant"
+    t.text "owner_move_in"
+    t.text "demolition"
+    t.text "capital_improvement"
+    t.text "substantial_rehab"
+    t.text "ellis_act_withdrawal"
+    t.text "condo_conversion"
+    t.text "roommate_same_unit"
+    t.text "other_cause"
+    t.text "late_payments"
+    t.text "lead_remediation"
+    t.text "development"
+    t.text "good_samaritan_ends"
+    t.text "constraints_date"
     t.text "supervisor_district"
     t.text "neighborhoods___analysis_boundaries"
     t.text "location"
