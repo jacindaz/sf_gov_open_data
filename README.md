@@ -13,12 +13,11 @@ https://datasf.org/showcase/
 
 
 ## To Do's
+* make `select <col1>, <col2>` work
+* export query results to csv
 * refactor: do i really need a `QueriesController` ?
 * queue query jobs to sidekiq
-* pagination
 * tests for importing eviction notices csv data
-* parse data
-* save to database
 * normalize with other police data sets
 * grab 2017 data: https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Current-Year-2017-/9v2m-8wqu
 
