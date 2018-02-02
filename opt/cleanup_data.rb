@@ -45,6 +45,21 @@ class CleanupData
     end
   end
 
+  def alter_column_to_date(column_name)
+    results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
+    strings_maybe_dates = results.map(&:values).flatten
+
+    if date_column?(strings_maybe_dates, column_name)
+      alter_and_update = "ALTER TABLE #{@table_name}
+                          ALTER #{column_name} TYPE date
+                          USING CAST(#{column_name} as date) "
+      @connection.exec(alter_and_update)
+      puts "Updated column #{column_name} to date column."
+    else
+      puts "Didn't update anything, #{column_name} is not a date column.\n"
+    end
+  end
+
   def get_table_column_names
     sql = "
       SELECT column_name
@@ -65,6 +80,38 @@ class CleanupData
 
   def integer_column?(values)
     values.all?{ |string| true if Integer(string) rescue false }
+  end
+
+  def date_column?(values, column_name)
+    is_length10 = values.all?{ |string| true if string.present? && string.length == 10 }
+
+    if is_length10
+      contains_delimiter = values.all? do |string|
+        string.count("/") == 2 || string.count("-") == 2 || string.count(".") == 2
+      end
+
+      if contains_delimiter
+        non_integers = []
+        is_integer = values.all? do |string|
+          if Integer(string.gsub("-", ""))
+            true
+          else
+            non_integers << string
+          end
+
+          if non_integers.present?
+            puts "Not a date column, these were not dates: #{non_integers.join(', ')}"
+            false
+          else
+            true
+          end
+        end
+      else
+        return false
+      end
+    else
+      return false
+    end
   end
 
   def calculate_integer_lengths(values)
