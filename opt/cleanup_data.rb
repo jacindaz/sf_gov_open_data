@@ -55,8 +55,7 @@ class CleanupData
   end
 
   def alter_column_to_date(column_name)
-    results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
-    strings_maybe_dates = results.map(&:values).flatten
+    strings_maybe_dates = column_values(column_name)
 
     if date_column?(strings_maybe_dates, column_name)
       alter_and_update = "ALTER TABLE #{@table_name}
