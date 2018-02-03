@@ -83,10 +83,8 @@ class CleanupData
     results.map(&:values).flatten
   end
 
-  private
-
   def column_values(column_name)
-    results = @connection.exec("select distinct #{column_name} from public.#{@table_name};")
+    results = @connection.exec("select distinct #{column_name} from public.#{@table_name} where #{column_name} != '' and #{column_name} is not null;")
     results.map(&:values).flatten
   end
 
@@ -95,7 +93,7 @@ class CleanupData
   end
 
   def date_column?(values, column_name)
-    is_length10 = values.all?{ |string| true if string.present? && string.length == 10 }
+    is_length10 = values.all?{ |string| true if string.length == 10 }
 
     if is_length10
       contains_delimiter = values.all? do |string|
