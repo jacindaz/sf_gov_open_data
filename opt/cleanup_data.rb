@@ -96,9 +96,6 @@ class CleanupData
     is_length10 = values.all?{ |string| true if string.length == 10 }
 
     if is_length10
-      contains_delimiter = values.all? do |string|
-        string.count("/") == 2 || string.count("-") == 2 || string.count(".") == 2
-      end
 
       if contains_delimiter
         non_integers = []
@@ -124,6 +121,11 @@ class CleanupData
     end
   end
 
+  def contains_delimiter(values)
+    values.all? do |string|
+      string.count("/") == 2 || string.count("-") == 2 || string.count(".") == 2
+    end
+  end
   def calculate_integer_lengths(values)
     max_bits = values.max{ |string| string.to_i.to_s(2).length }.length
 
