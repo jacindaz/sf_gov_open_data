@@ -133,11 +133,9 @@ class CleanupData
   end
 
   def remove_delimiter_from_date(date_string)
-    date_string.gsub!("/", "")
-    date_string.gsub!("-", "")
-    date_string.gsub!(".", "")
-
-    date_string
+    date_string.delete!("/")
+    date_string.delete!("-")
+    date_string.delete!(".")
   end
 
   def calculate_integer_lengths(values)
