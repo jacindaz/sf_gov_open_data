@@ -60,7 +60,10 @@ class CleanupData
     if date_column?(strings_maybe_dates, column_name)
       alter_and_update = "ALTER TABLE #{@table_name}
                           ALTER #{column_name} TYPE date
-                          USING CAST(#{column_name} as date) "
+                          USING
+                          CASE WHEN #{column_name} = '' THEN null
+                          ELSE CAST(#{column_name} as date)
+                          END"
       @connection.exec(alter_and_update)
       puts "Updated column #{column_name} to date column."
     else
