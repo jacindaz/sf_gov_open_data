@@ -7,6 +7,12 @@ class CleanupData
     @table_name = table_name
   end
 
+  def perform
+    get_text_columns.each { |column_name| alter_column_to_bool(column_name) }
+    get_text_columns.each { |column_name| alter_column_to_int(column_name) }
+    get_text_columns.each { |column_name| alter_column_to_date(column_name) }
+  end
+
   def alter_column_to_bool(column_name)
     possible_boolean_strings = ["FALSE", "false", "f", "TRUE", "true", "t"]
     boolean_strings = column_values(column_name)
@@ -63,12 +69,15 @@ class CleanupData
     end
   end
 
-  def get_table_column_names
+  private
+
+  def get_text_columns
     sql = "
       SELECT column_name
       FROM information_schema.columns
       WHERE table_schema = 'public'
       AND table_name='#{@table_name}'
+      AND data_type = 'text'
     "
     results = @connection.exec(sql)
     results.map(&:values).flatten
