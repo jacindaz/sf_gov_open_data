@@ -37,7 +37,10 @@ class CleanupData
     if integer_column?(strings_maybe_integers)
       alter_and_update = "ALTER TABLE #{@table_name}
                           ALTER #{column_name} TYPE #{column_type}
-                          USING CAST(#{column_name} as #{column_type}) "
+                          USING
+                          CASE WHEN #{column_name} = '' THEN null
+                          ELSE CAST(#{column_name} as #{column_type})
+                          END"
       @connection.exec(alter_and_update)
       puts "Updated column #{column_name} to integer column."
     else
