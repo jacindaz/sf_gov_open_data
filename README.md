@@ -14,12 +14,22 @@ https://datasf.org/showcase/
 
 ## To Do's
 * make `select <col1>, <col2>` work
+* change app to be sinatra instead of rails
+* use Sequel (or some other lightweight ORM), instead of ActiveRecord
 * export query results to csv
 * refactor: do i really need a `QueriesController` ?
 * queue query jobs to sidekiq
 * tests for importing eviction notices csv data
 * normalize with other police data sets
 * grab 2017 data: https://data.sfgov.org/Public-Safety/Police-Department-Incidents-Current-Year-2017-/9v2m-8wqu
+
+## Notes
+* expand CleanupData class to be for all tables (right now for only 1 table)
+* add a cleanup_data.perform method
+* rake task shouldn't need to know which methods to call
+* also then perform can handle knowing which columns we've already checked. like if a column is not type "text" then we've already checked, and can skip
+* also, should add some high level tests to make sure data was transformed properly
+* add logging to an errors logfile like SetupTable
 
 ## Resources and Links
 * https://data.sfgov.org/browse?category=Housing+and+Buildings
