@@ -95,34 +95,31 @@ class CleanupData
   end
 
   def date_column?(values, column_name)
-    is_length10 = values.all?{ |string| true if string.length == 10 }
+    length10 = values.all?{ |string| true if string.length == 10 }
 
-    if is_length10
+    if length10
       if contains_delimiter(values)
-        non_integers = []
-        is_integer = values.all? do |string|
-          if string[0] == "0"
-            string = string[1..-1]
-          end
-
-          if Integer(remove_delimiter_from_date(string))
-            true
-          else
-            non_integers << string
-          end
-
-          if non_integers.present?
-            puts "Not a date column, these were not dates: #{non_integers.join(', ')}"
-            false
-          else
-            true
-          end
-        end
+        date_without_delimiters_is_integer(values)
       else
         return false
       end
     else
       return false
+    end
+  end
+
+  def date_without_delimiters_is_integer(values)
+    non_integers = []
+    is_integer = values.all? do |string|
+      string = string[1..-1] if string[0] == "0"
+      Integer(remove_delimiter_from_date(string)) ? true : non_integers << string
+    end
+
+    if is_integer
+      true
+    else
+      puts "Not a date column, these were not dates: #{non_integers.join(', ')}"
+      false
     end
   end
 
