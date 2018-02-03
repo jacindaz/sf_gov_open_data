@@ -98,6 +98,10 @@ class CleanupData
       if contains_delimiter(values)
         non_integers = []
         is_integer = values.all? do |string|
+          if string[0] == "0"
+            string = string[1..-1]
+          end
+
           if Integer(remove_delimiter_from_date(string))
             true
           else
