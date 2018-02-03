@@ -96,11 +96,10 @@ class CleanupData
     is_length10 = values.all?{ |string| true if string.length == 10 }
 
     if is_length10
-
-      if contains_delimiter
+      if contains_delimiter(values)
         non_integers = []
         is_integer = values.all? do |string|
-          if Integer(string.gsub("-", ""))
+          if Integer(remove_delimiter_from_date(string))
             true
           else
             non_integers << string
@@ -126,6 +125,15 @@ class CleanupData
       string.count("/") == 2 || string.count("-") == 2 || string.count(".") == 2
     end
   end
+
+  def remove_delimiter_from_date(date_string)
+    date_string.gsub!("/", "")
+    date_string.gsub!("-", "")
+    date_string.gsub!(".", "")
+
+    date_string
+  end
+
   def calculate_integer_lengths(values)
     max_bits = values.max{ |string| string.to_i.to_s(2).length }.length
 
