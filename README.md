@@ -13,6 +13,7 @@ https://datasf.org/showcase/
 
 
 ## To Do's
+* import by hitting json endpoint, update/append new data
 * make `select <col1>, <col2>` work
 * export query results to csv
 * refactor: do i really need a `QueriesController` ?
