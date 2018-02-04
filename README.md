@@ -14,8 +14,6 @@ https://datasf.org/showcase/
 
 ## To Do's
 * make `select <col1>, <col2>` work
-* change app to be sinatra instead of rails
-* use Sequel (or some other lightweight ORM), instead of ActiveRecord
 * export query results to csv
 * refactor: do i really need a `QueriesController` ?
 * queue query jobs to sidekiq
