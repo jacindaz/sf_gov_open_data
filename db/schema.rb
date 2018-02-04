@@ -15,6 +15,76 @@ ActiveRecord::Schema.define(version: 20180204003407) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "affordable_housing_pipeline", id: :serial, limit: 2, force: :cascade do |t|
+    t.text "project_id"
+    t.text "project_status"
+    t.text "project_name"
+    t.text "street_number"
+    t.text "street_name"
+    t.text "street_type"
+    t.bigint "zip_code"
+    t.text "planning_address"
+    t.text "apns"
+    t.integer "supervisor_district", limit: 2
+    t.text "planning_neighborhood"
+    t.text "city_analysis_neighborhood"
+    t.text "lead_agency"
+    t.text "program_area"
+    t.text "project_area"
+    t.text "project_type"
+    t.text "housing_tenure"
+    t.date "issuance_of_notice_to_proceed"
+    t.date "issuance_of_building_permit"
+    t.date "issuance_of_first_construction_document"
+    t.date "estimated_actual_construction_start_date"
+    t.date "estimated_construction_completion"
+    t.text "project_lead_sponsor"
+    t.text "project_co_sponsor"
+    t.text "project_owner"
+    t.text "dbi_permit_number"
+    t.text "planning__case_number"
+    t.text "property_informaiton_map_link"
+    t.text "planning_entitlements"
+    t.date "entitlement_approval"
+    t.text "section_415_declaration"
+    t.text "recording_number"
+    t.date "recording_date"
+    t.integer "project_units"
+    t.integer "affordable_units", limit: 2
+    t.integer "market_rate_units", limit: 2
+    t.text "_affordable"
+    t.integer "sro_units", limit: 2
+    t.integer "studio_units", limit: 2
+    t.integer "_1bd_units", limit: 2
+    t.integer "_2bd_units", limit: 2
+    t.integer "_3bd_units", limit: 2
+    t.integer "_4bd_units", limit: 2
+    t.integer "_5_or_more_bd_units", limit: 2
+    t.integer "mobility_units", limit: 2
+    t.integer "manager_units", limit: 2
+    t.text "manager_units_type"
+    t.integer "family_units", limit: 2
+    t.integer "senior_units"
+    t.integer "tay_units", limit: 2
+    t.integer "homeless_units", limit: 2
+    t.integer "disabled_units", limit: 2
+    t.integer "losp_units", limit: 2
+    t.integer "public_housing_replacement_units", limit: 2
+    t.integer "_20_ami", limit: 2
+    t.integer "_30_ami", limit: 2
+    t.integer "_50_ami"
+    t.integer "_55_ami", limit: 2
+    t.integer "_60_ami", limit: 2
+    t.integer "_80_ami", limit: 2
+    t.integer "_90_ami", limit: 2
+    t.integer "_100_ami", limit: 2
+    t.integer "_120_ami", limit: 2
+    t.integer "_150_ami", limit: 2
+    t.text "latitude"
+    t.text "longitude"
+    t.text "location"
+  end
+
   create_table "data_sources", force: :cascade do |t|
     t.string "title", null: false
     t.string "data_sf_uuid", null: false
@@ -34,29 +104,99 @@ ActiveRecord::Schema.define(version: 20180204003407) do
     t.text "city"
     t.text "state"
     t.text "eviction_notice_source_zipcode"
-    t.text "file_date"
-    t.text "non_payment"
-    t.text "breach"
-    t.text "nuisance"
-    t.text "illegal_use"
-    t.text "failure_to_sign_renewal"
-    t.text "access_denial"
-    t.text "unapproved_subtenant"
-    t.text "owner_move_in"
-    t.text "demolition"
-    t.text "capital_improvement"
-    t.text "substantial_rehab"
-    t.text "ellis_act_withdrawal"
-    t.text "condo_conversion"
-    t.text "roommate_same_unit"
-    t.text "other_cause"
-    t.text "late_payments"
-    t.text "lead_remediation"
-    t.text "development"
-    t.text "good_samaritan_ends"
+    t.date "file_date"
+    t.boolean "non_payment"
+    t.boolean "breach"
+    t.boolean "nuisance"
+    t.boolean "illegal_use"
+    t.boolean "failure_to_sign_renewal"
+    t.boolean "access_denial"
+    t.boolean "unapproved_subtenant"
+    t.boolean "owner_move_in"
+    t.boolean "demolition"
+    t.boolean "capital_improvement"
+    t.boolean "substantial_rehab"
+    t.boolean "ellis_act_withdrawal"
+    t.boolean "condo_conversion"
+    t.boolean "roommate_same_unit"
+    t.boolean "other_cause"
+    t.boolean "late_payments"
+    t.boolean "lead_remediation"
+    t.boolean "development"
+    t.boolean "good_samaritan_ends"
     t.text "constraints_date"
     t.text "supervisor_district"
     t.text "neighborhoods___analysis_boundaries"
+    t.text "location"
+  end
+
+  create_table "original_affordable_housing_pipeline", id: false, force: :cascade do |t|
+    t.text "project_id"
+    t.text "project_status"
+    t.text "project_name"
+    t.text "street_number"
+    t.text "street_name"
+    t.text "street_type"
+    t.text "zip_code"
+    t.text "planning_address"
+    t.text "apns"
+    t.text "supervisor_district"
+    t.text "planning_neighborhood"
+    t.text "city_analysis_neighborhood"
+    t.text "lead_agency"
+    t.text "program_area"
+    t.text "project_area"
+    t.text "project_type"
+    t.text "housing_tenure"
+    t.text "issuance_of_notice_to_proceed"
+    t.text "issuance_of_building_permit"
+    t.text "issuance_of_first_construction_document"
+    t.text "estimated_actual_construction_start_date"
+    t.text "estimated_construction_completion"
+    t.text "project_lead_sponsor"
+    t.text "project_co_sponsor"
+    t.text "project_owner"
+    t.text "dbi_permit_number"
+    t.text "planning__case_number"
+    t.text "property_informaiton_map_link"
+    t.text "planning_entitlements"
+    t.text "entitlement_approval"
+    t.text "section_415_declaration"
+    t.text "recording_number"
+    t.text "recording_date"
+    t.text "project_units"
+    t.text "affordable_units"
+    t.text "market_rate_units"
+    t.text "_affordable"
+    t.text "sro_units"
+    t.text "studio_units"
+    t.text "_1bd_units"
+    t.text "_2bd_units"
+    t.text "_3bd_units"
+    t.text "_4bd_units"
+    t.text "_5_or_more_bd_units"
+    t.text "mobility_units"
+    t.text "manager_units"
+    t.text "manager_units_type"
+    t.text "family_units"
+    t.text "senior_units"
+    t.text "tay_units"
+    t.text "homeless_units"
+    t.text "disabled_units"
+    t.text "losp_units"
+    t.text "public_housing_replacement_units"
+    t.text "_20_ami"
+    t.text "_30_ami"
+    t.text "_50_ami"
+    t.text "_55_ami"
+    t.text "_60_ami"
+    t.text "_80_ami"
+    t.text "_90_ami"
+    t.text "_100_ami"
+    t.text "_120_ami"
+    t.text "_150_ami"
+    t.text "latitude"
+    t.text "longitude"
     t.text "location"
   end
 
@@ -90,27 +230,6 @@ ActiveRecord::Schema.define(version: 20180204003407) do
     t.text "supervisor_district"
     t.text "neighborhoods___analysis_boundaries"
     t.text "location"
-  end
-
-  create_table "original_sf_gov_data", id: :serial, force: :cascade do |t|
-    t.string "computed_region_bh8s_q3mv", limit: 255
-    t.string "computed_region_fyvs_ahh9", limit: 255
-    t.string "computed_region_p5aj_wyqh", limit: 255
-    t.string "computed_region_rxqg_mtj9", limit: 255
-    t.string "computed_region_yftq_j783", limit: 255
-    t.string "address", limit: 255
-    t.string "category", limit: 255
-    t.string "date", limit: 255
-    t.string "dayofweek", limit: 255
-    t.string "descript", limit: 255
-    t.string "incidntnum", limit: 255
-    t.string "location", limit: 255
-    t.string "pddistrict", limit: 255
-    t.string "pdid", limit: 255
-    t.string "resolution", limit: 255
-    t.string "time", limit: 255
-    t.string "x", limit: 255
-    t.string "y", limit: 255
   end
 
   create_table "police_incidents", force: :cascade do |t|
