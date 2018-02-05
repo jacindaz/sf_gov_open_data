@@ -3,11 +3,10 @@ require 'json'
 require 'pg'
 require 'pry'
 
-class ImportSFPoliceData
-  def initialize(url='https://data.sfgov.org/resource/cuks-n6tp.json')
-    @url = url
-    @connection = PG.connect(dbname: 'sf_police_data_development')
-    @table_name = 'original_sf_gov_data'
+class ImportData
+  def initialize(database_name, drop_table=false)
+    @connection = PG.connect(dbname: database_name)
+    @drop_table = drop_table
   end
 
   def json_from_file
@@ -23,7 +22,7 @@ class ImportSFPoliceData
   end
 
   def process
-    rollback
+    rollback if @drop_table
     json_response
     create_table
 
@@ -53,7 +52,7 @@ class ImportSFPoliceData
   end
 
   def rollback
-    @connection.exec("drop table #{@table_name}")
+    @connection.exec("drop table #{@table_name}") 
   end
 end
 
