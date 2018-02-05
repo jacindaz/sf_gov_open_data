@@ -1,5 +1,5 @@
+require 'elasticsearch/model'
+
 class EvictionNotice < ApplicationRecord
-  def to_hash
-    attributes
-  end
+  include Elasticsearch::Model
 end
