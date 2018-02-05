@@ -9,12 +9,6 @@ class ImportData
     @drop_table = drop_table
   end
 
-  def json_from_file
-    puts "reading the json file..."
-    file = File.read("/Users/jzhong/Documents/jacinda/sf_police_data/opt/police_data/original_sf_gov_data.json")
-    @results = JSON.parse(file)
-  end
-
   def json_response
     response = Net::HTTP.get(URI(@url))
     puts "parsing json response..."
