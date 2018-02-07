@@ -14,6 +14,7 @@ https://datasf.org/showcase/
 
 ## To Do's
 * import by hitting json endpoint, update/append new data
+* look at the data source url, there are attachments with more data/info, like keys/codes and definitions. need to import these as well
 * split ETL part into separate service
 * make `select <col1>, <col2>` work
 * export query results to csv
