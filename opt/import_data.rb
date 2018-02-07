@@ -20,10 +20,10 @@ class ImportData
       rollback(data_source.table_name) if @drop_tables
 
       results = json_response(data_source.json_endpoint)
-      table_columns = results.first.keys.map!{ |c| c.sub(/:@/,'') }
+      json_columns = json_endpoint_columns(results)
 
-      create_table(data_source.table_name, table_columns)
-      insert_rows(data_source, table_columns, results)
+      create_table(data_source.table_name, json_columns)
+      insert_rows(data_source, json_columns, results)
     end
   end
 
@@ -37,27 +37,40 @@ class ImportData
 	    else
         insert_stmt += "$#{index + 1}, "
       end
+    end
 
-      @connection.prepare("insert_statement", insert_stmt)
+    @connection.prepare("insert_statement_#{data_source.table_name}", insert_stmt)
 
-      results.each do |row|
-        next if row.values.length != results.length
-        @connection.exec_prepared('insert_statement', row.values)
-      end
+    results.each do |row|
+      next if row.values.length != results.length
+      @connection.exec_prepared('insert_statement', row.values)
     end
   end
 
   private
 
-  def create_table(table_name, table_columns)
+  def create_table(table_name, json_columns)
     puts "creating table...."
 
     create_table_sql = "create table if not exists #{table_name} ("
     create_table_sql += "id serial primary key,"
-    create_table_sql += (table_columns.join(" varchar(255), ") + " varchar(255)")
+    create_table_sql += (json_columns.join(" varchar(255), ") + " varchar(255)")
     create_table_sql += ");"
-
     @connection.exec(create_table_sql)
+
+    existing_cols_sql = "select column_name from information_schema.columns where table_schema = 'public' and table_name = '#{table_name}'"
+    columns_that_already_exist = @connection.exec(existing_cols_sql).values.flatten
+    columns_that_need_to_be_created = json_columns - columns_that_already_exist
+
+    puts "adding new columns to #{table_name}: #{columns_that_need_to_be_created.join(", ")}"
+    columns_that_need_to_be_created.each do |column_name|
+      @connection.exec("ALTER TABLE #{table_name} ADD COLUMN #{column_name} text;")
+    end
+  end
+
+  def json_endpoint_columns(results)
+    unique_columns = results.map(&:keys).flatten.uniq
+    unique_columns.map!{ |c| c.sub(/:@/,'') }
   end
 
   def rollback(table_name)
