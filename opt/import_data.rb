@@ -54,7 +54,7 @@ class ImportData
 
     create_table_sql = "create table if not exists #{table_name} ("
     create_table_sql += "id serial primary key,"
-    create_table_sql += (json_columns.join(" varchar(255), ") + " varchar(255)")
+    create_table_sql += (json_columns.join(" text, ") + " text")
     create_table_sql += ");"
     @connection.exec(create_table_sql)
 
