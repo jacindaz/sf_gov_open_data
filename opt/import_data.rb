@@ -23,27 +23,46 @@ class ImportData
       json_columns = json_endpoint_columns(results)
 
       create_table(data_source.table_name, json_columns)
-      insert_rows(data_source, json_columns, results)
+      insert_rows(data_source, results)
     end
   end
 
-  def insert_rows(data_source, table_columns, results)
-    puts "inserting values into table..."
+  def insert_rows(data_source, results)
+    # STEP 1:
+    # => booooo i think i need a different prepared statement for each row ??
+    # => since each row has different columns
+    # => start by doing a new prepared statement per json result
+    #
+    # STEP 2:
+    # => then group json results based on keys
+    # => like which results have the same keys
+    # => and prepare insert statements based on each distinct json result
 
-    insert_stmt = "insert into #{data_source.table_name} (#{table_columns.join(', ')}) values ("
-    table_columns.each_with_index do |col, index|
-      if index == (table_columns.length - 1)
-        insert_stmt += "$#{index + 1})"
-	    else
-        insert_stmt += "$#{index + 1}, "
+    results.each_with_index do |row, index|
+      row_columns = row.keys.map!{ |c| c.sub(/:@/,"") }
+
+      prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
+      row_columns.each_with_index do |col, index|
+        if index == (row_columns.length - 1)
+          prepared_insert += "NULLIF($#{index + 1}, ''))"
+        else
+          prepared_insert += "NULLIF($#{index + 1}, ''), "
+        end
       end
-    end
 
-    @connection.prepare("insert_statement_#{data_source.table_name}", insert_stmt)
+      # START HERE: ================================================================================
+      # => not sure why getting this error on step 5 below:
+      #    PG::DuplicatePstatement: ERROR:  prepared statement
+      #    "insert_statement_assessor_historical_secured_property_tax_roles_3593007"
+      #    already exists
+      # => only happening on assessor_historical_secured_property_tax_roles table
+      # ============================================================================================
 
-    results.each do |row|
-      next if row.values.length != results.length
-      @connection.exec_prepared('insert_statement', row.values)
+      unique_identifier_for_prepared_stmt = row["#{data_source.unique_identifier_column_name}"]
+      prepared_insert_name = "insert_statement_#{data_source.table_name}_#{unique_identifier_for_prepared_stmt}"
+      @connection.prepare(prepared_insert_name, prepared_insert)
+
+      @connection.exec_prepared(prepared_insert_name, row.values)
     end
   end
 
@@ -62,7 +81,7 @@ class ImportData
     columns_that_already_exist = @connection.exec(existing_cols_sql).values.flatten
     columns_that_need_to_be_created = json_columns - columns_that_already_exist
 
-    puts "adding new columns to #{table_name}: #{columns_that_need_to_be_created.join(", ")}"
+    puts "adding new columns to #{table_name}: #{columns_that_need_to_be_created.join(', ')}"
     columns_that_need_to_be_created.each do |column_name|
       @connection.exec("ALTER TABLE #{table_name} ADD COLUMN #{column_name} text;")
     end
@@ -70,7 +89,7 @@ class ImportData
 
   def json_endpoint_columns(results)
     unique_columns = results.map(&:keys).flatten.uniq
-    unique_columns.map!{ |c| c.sub(/:@/,'') }
+    unique_columns.map!{ |c| c.sub(/:@/,"") }
   end
 
   def rollback(table_name)
