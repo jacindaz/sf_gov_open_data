@@ -50,19 +50,12 @@ class ImportData
         end
       end
 
-      # START HERE: ================================================================================
-      # => not sure why getting this error on step 5 below:
-      #    PG::DuplicatePstatement: ERROR:  prepared statement
-      #    "insert_statement_assessor_historical_secured_property_tax_roles_3593007"
-      #    already exists
-      # => only happening on assessor_historical_secured_property_tax_roles table
-      # ============================================================================================
-
       unique_identifier_for_prepared_stmt = row["#{data_source.unique_identifier_column_name}"]
-      prepared_insert_name = "insert_statement_#{data_source.table_name}_#{unique_identifier_for_prepared_stmt}"
-      @connection.prepare(prepared_insert_name, prepared_insert)
+      prepared_insert_name = "insert_statement_#{data_source.table_name}_#{(unique_identifier_for_prepared_stmt).delete('-')}"
 
+      @connection.prepare(prepared_insert_name, prepared_insert)
       @connection.exec_prepared(prepared_insert_name, row.values)
+      @connection.exec("deallocate all")
     end
   end
 
