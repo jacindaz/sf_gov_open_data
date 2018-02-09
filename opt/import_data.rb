@@ -25,6 +25,8 @@ class ImportData
       create_table(data_source.table_name, json_columns)
       insert_rows(data_source, results)
     end
+
+    test_results
   end
 
   def insert_rows(data_source, results)
@@ -83,6 +85,28 @@ class ImportData
   def rollback(table_name)
     @connection.exec("drop table #{table_name}")
     puts "\ndropping table #{table_name}"
+  end
+
+  def test_results
+    expected_table_counts = {
+      building_permits: 1000,
+      eviction_notices: 1000,
+      assessor_historical_secured_property_tax_roles: 1000,
+      buyout_agreements: 857,
+      affordable_housing_pipeline: 299
+    }
+
+    DataSource.all.each do |data_source|
+      result = @connection.exec("select count(*) from #{data_source.table_name}").values[0][0].to_i
+
+      puts "\n=========="
+      if result != expected_table_counts[data_source.table_name.to_sym]
+        puts "\e[1;31mExpected count for #{data_source.table_name} #{expected_table_counts[data_source.table_name.to_sym]}, actual count: #{result}"
+      else
+        puts "\e[1;32mYay! Expected count #{expected_table_counts[data_source.table_name.to_sym]} (#{data_source.table_name}) matches actual count: #{result}"
+      end
+      puts "==========\n"
+    end
   end
 end
 
