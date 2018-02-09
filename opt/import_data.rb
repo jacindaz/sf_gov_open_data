@@ -6,12 +6,12 @@ require 'pry'
 class ImportData
   def initialize(database_name, drop_tables = false)
     @connection = PG.connect(dbname: database_name)
-    @drop_table = drop_tables
+    @drop_tables = drop_tables
   end
 
   def json_response(url)
     response = Net::HTTP.get(URI(url))
-    puts "parsing json response..."
+    puts "\nparsing json response..."
     JSON.parse(response)
   end
 
@@ -28,35 +28,30 @@ class ImportData
   end
 
   def insert_rows(data_source, results)
-    # STEP 1:
-    # => booooo i think i need a different prepared statement for each row ??
-    # => since each row has different columns
-    # => start by doing a new prepared statement per json result
-    #
-    # STEP 2:
-    # => then group json results based on keys
-    # => like which results have the same keys
-    # => and prepare insert statements based on each distinct json result
+    grouped_results_by_keys = results.group_by{ |row| row.keys.sort }
 
-    results.each_with_index do |row, index|
-      row_columns = row.keys.map!{ |c| c.sub(/:@/,"") }
+    grouped_results_by_keys.each do |array_of_keys, rows_with_same_keys|
+      row_columns = array_of_keys.map!{ |c| c.sub(/:@/,"") }
 
-      prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
-      row_columns.each_with_index do |col, index|
-        if index == (row_columns.length - 1)
-          prepared_insert += "NULLIF($#{index + 1}, ''))"
-        else
-          prepared_insert += "NULLIF($#{index + 1}, ''), "
+      rows_with_same_keys.each_with_index do |row, index|
+        prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
+        row_columns.each_with_index do |col, index|
+          if index == (row_columns.length - 1)
+            prepared_insert += "NULLIF($#{index + 1}, ''))"
+          else
+            prepared_insert += "NULLIF($#{index + 1}, ''), "
+          end
         end
+
+        unique_identifier_for_prepared_stmt = row["#{data_source.unique_identifier_column_name}"]
+        prepared_insert_name = "insert_statement_#{data_source.table_name}_#{unique_identifier_for_prepared_stmt.delete('-')}"
+
+        @connection.prepare(prepared_insert_name, prepared_insert)
+        @connection.exec_prepared(prepared_insert_name, row.values)
+        @connection.exec("deallocate all")
       end
-
-      unique_identifier_for_prepared_stmt = row["#{data_source.unique_identifier_column_name}"]
-      prepared_insert_name = "insert_statement_#{data_source.table_name}_#{(unique_identifier_for_prepared_stmt).delete('-')}"
-
-      @connection.prepare(prepared_insert_name, prepared_insert)
-      @connection.exec_prepared(prepared_insert_name, row.values)
-      @connection.exec("deallocate all")
     end
+
   end
 
   private
@@ -87,6 +82,7 @@ class ImportData
 
   def rollback(table_name)
     @connection.exec("drop table #{table_name}")
+    puts "\ndropping table #{table_name}"
   end
 end
 
