@@ -23,13 +23,13 @@ class ImportData
       json_columns = json_endpoint_columns(results)
 
       create_table(data_source.table_name, json_columns)
-      insert_rows(data_source, results)
+      insert_or_update_rows(data_source, results)
     end
 
     test_results
   end
 
-  def insert_rows(data_source, results)
+  def insert_or_update_rows(data_source, results)
     grouped_results_by_keys = results.group_by{ |row| row.keys.sort }
     num_rows_updated = 0
 
@@ -43,30 +43,12 @@ class ImportData
         existing_rows = @connection.exec("select id from #{data_source.table_name} where #{data_source.unique_identifier_column_name} = '#{row_identifier}'").values
         prepared_name = "insert_or_update_statement_#{data_source.table_name}_#{row_identifier.delete('-')}"
 
-
         if existing_rows.empty?
-          prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
-
-          row_columns.each_with_index do |col, index|
-            if index == (row_columns.length - 1)
-              prepared_insert += "NULLIF($#{index + 1}, ''))"
-            else
-              prepared_insert += "NULLIF($#{index + 1}, ''), "
-            end
-          end
-
+          prepared_insert = insert_prepared_statement(data_source, row_columns)
           @connection.prepare(prepared_name, prepared_insert)
           @connection.exec_prepared(prepared_name, row.values)
         else
-          row_mapping = ""
-          row.keys.each_with_index{ |key, index| row_mapping += "#{key} = $#{index + 1}, " }
-          row_mapping = row_mapping[0...-2]
-
-          prepared_update = "UPDATE #{data_source.table_name}
-                             SET #{row_mapping}
-                             WHERE #{data_source.unique_identifier_column_name} = '#{row_identifier}'
-                             RETURNING id, #{data_source.unique_identifier_column_name}"
-
+          prepared_update = update_prepared_statement(data_source, row, row_identifier)
           @connection.prepare(prepared_name, prepared_update)
           @connection.exec_prepared(prepared_name, row.values)
 
@@ -106,6 +88,31 @@ class ImportData
   def json_endpoint_columns(results)
     unique_columns = results.map(&:keys).flatten.uniq
     unique_columns.map!{ |c| c.sub(/:@/,"") }
+  end
+
+  def insert_prepared_statement(data_source, row_columns)
+    prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
+
+    row_columns.each_with_index do |col, index|
+      if index == (row_columns.length - 1)
+        prepared_insert += "NULLIF($#{index + 1}, ''))"
+      else
+        prepared_insert += "NULLIF($#{index + 1}, ''), "
+      end
+    end
+
+    prepared_insert
+  end
+
+  def update_prepared_statement(data_source, row, row_identifier)
+    row_mapping = ""
+    row.keys.each_with_index{ |key, index| row_mapping += "#{key} = $#{index + 1}, " }
+    row_mapping = row_mapping[0...-2]
+
+    "UPDATE #{data_source.table_name}
+     SET #{row_mapping}
+     WHERE #{data_source.unique_identifier_column_name} = '#{row_identifier}'
+     RETURNING id, #{data_source.unique_identifier_column_name}"
   end
 
   def rollback(table_name)
