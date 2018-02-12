@@ -91,7 +91,7 @@ class ImportData
     expected_table_counts = {
       building_permits: 1000,
       eviction_notices: 1000,
-      assessor_historical_secured_property_tax_roles: 1000,
+      assessor_historical_secured_property_tax_roles: 978,
       buyout_agreements: 857,
       affordable_housing_pipeline: 299
     }
@@ -99,13 +99,15 @@ class ImportData
     DataSource.all.each do |data_source|
       result = @connection.exec("select count(*) from #{data_source.table_name}").values[0][0].to_i
 
-      puts "\n=========="
       if result != expected_table_counts[data_source.table_name.to_sym]
-        puts "\e[1;31mExpected count for #{data_source.table_name} #{expected_table_counts[data_source.table_name.to_sym]}, actual count: #{result}"
+        puts "\n\e[1;31m=========="
+        puts "Expected count for #{data_source.table_name} #{expected_table_counts[data_source.table_name.to_sym]}, actual count: #{result}"
+        puts "==========\n"
       else
-        puts "\e[1;32mYay! Expected count #{expected_table_counts[data_source.table_name.to_sym]} (#{data_source.table_name}) matches actual count: #{result}"
+        puts "\n\e[1;32m=========="
+        puts "Yay! Expected count #{expected_table_counts[data_source.table_name.to_sym]} (#{data_source.table_name}) matches actual count: #{result}"
+        puts "==========\n"
       end
-      puts "==========\n"
     end
   end
 end
