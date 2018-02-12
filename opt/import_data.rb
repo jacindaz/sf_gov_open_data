@@ -31,29 +31,55 @@ class ImportData
 
   def insert_rows(data_source, results)
     grouped_results_by_keys = results.group_by{ |row| row.keys.sort }
+    num_rows_updated = 0
 
     grouped_results_by_keys.each do |array_of_keys, rows_with_same_keys|
       row_columns = array_of_keys.map!{ |c| c.sub(/:@/,"") }
 
       rows_with_same_keys.each_with_index do |row, index|
-        prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
-        row_columns.each_with_index do |col, index|
-          if index == (row_columns.length - 1)
-            prepared_insert += "NULLIF($#{index + 1}, ''))"
-          else
-            prepared_insert += "NULLIF($#{index + 1}, ''), "
+        row = row_columns.zip(row.values).to_h
+        row_identifier = row["#{data_source.unique_identifier_column_name}"]
+
+        existing_rows = @connection.exec("select id from #{data_source.table_name} where #{data_source.unique_identifier_column_name} = '#{row_identifier}'").values
+        prepared_name = "insert_or_update_statement_#{data_source.table_name}_#{row_identifier.delete('-')}"
+
+
+        if existing_rows.empty?
+          prepared_insert = "insert into #{data_source.table_name} (#{row_columns.join(', ')}) values ("
+
+          row_columns.each_with_index do |col, index|
+            if index == (row_columns.length - 1)
+              prepared_insert += "NULLIF($#{index + 1}, ''))"
+            else
+              prepared_insert += "NULLIF($#{index + 1}, ''), "
+            end
           end
+
+          @connection.prepare(prepared_name, prepared_insert)
+          @connection.exec_prepared(prepared_name, row.values)
+        else
+          row_mapping = ""
+          row.keys.each_with_index{ |key, index| row_mapping += "#{key} = $#{index + 1}, " }
+          row_mapping = row_mapping[0...-2]
+
+          prepared_update = "UPDATE #{data_source.table_name}
+                             SET #{row_mapping}
+                             WHERE #{data_source.unique_identifier_column_name} = '#{row_identifier}'
+                             RETURNING id, #{data_source.unique_identifier_column_name}"
+
+          @connection.prepare(prepared_name, prepared_update)
+          @connection.exec_prepared(prepared_name, row.values)
+
+          num_rows_updated += 1
+
+          print "."
         end
 
-        unique_identifier_for_prepared_stmt = row["#{data_source.unique_identifier_column_name}"]
-        prepared_insert_name = "insert_statement_#{data_source.table_name}_#{unique_identifier_for_prepared_stmt.delete('-')}"
-
-        @connection.prepare(prepared_insert_name, prepared_insert)
-        @connection.exec_prepared(prepared_insert_name, row.values)
         @connection.exec("deallocate all")
       end
     end
 
+    puts "\n# of rows updated: #{num_rows_updated}"
   end
 
   private
