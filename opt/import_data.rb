@@ -30,7 +30,11 @@ class ImportData
   end
 
   def insert_or_update_rows(data_source, results)
+    json_unique_ids = results.map{ |result| result[data_source.unique_identifier_column_name] }.to_s.tr('\"', "'").tr("[", "(").tr("]", ")")
+    existing_rows = @connection.exec("select #{data_source.unique_identifier_column_name} from #{data_source.table_name} where #{data_source.unique_identifier_column_name} in #{json_unique_ids}").values.flatten
+
     grouped_results_by_keys = results.group_by{ |row| row.keys.sort }
+    num_rows_inserted = 0
     num_rows_updated = 0
 
     grouped_results_by_keys.each do |array_of_keys, rows_with_same_keys|
@@ -40,28 +44,30 @@ class ImportData
         row = row_columns.zip(row.values).to_h
         row_identifier = row["#{data_source.unique_identifier_column_name}"]
 
-        existing_rows = @connection.exec("select id from #{data_source.table_name} where #{data_source.unique_identifier_column_name} = '#{row_identifier}'").values
         prepared_name = "insert_or_update_statement_#{data_source.table_name}_#{row_identifier.delete('-')}"
 
-        if existing_rows.empty?
-          prepared_insert = insert_prepared_statement(data_source, row_columns)
-          @connection.prepare(prepared_name, prepared_insert)
-          @connection.exec_prepared(prepared_name, row.values)
-        else
+        if existing_rows.include?(row_identifier)
           prepared_update = update_prepared_statement(data_source, row, row_identifier)
           @connection.prepare(prepared_name, prepared_update)
           @connection.exec_prepared(prepared_name, row.values)
 
           num_rows_updated += 1
+          print "." if num_rows_updated % 100
+        else
+          prepared_insert = insert_prepared_statement(data_source, row_columns)
+          @connection.prepare(prepared_name, prepared_insert)
+          @connection.exec_prepared(prepared_name, row.values)
 
-          print "."
+          num_rows_inserted += 1
+          print "." if num_rows_inserted % 100
         end
 
         @connection.exec("deallocate all")
       end
     end
 
-    puts "\n# of rows updated: #{num_rows_updated}"
+    puts "\n# of rows inserted: #{num_rows_inserted}"
+    puts "# of rows updated: #{num_rows_updated}"
   end
 
   private
@@ -124,7 +130,7 @@ class ImportData
     expected_table_counts = {
       building_permits: 1000,
       eviction_notices: 1000,
-      assessor_historical_secured_property_tax_roles: 978,
+      assessor_historical_secured_property_tax_roles: 1000,
       buyout_agreements: 857,
       affordable_housing_pipeline: 299
     }
