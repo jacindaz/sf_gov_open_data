@@ -15,7 +15,8 @@ data_sources = [
     date_downloaded: Date.new(2018, 1, 24),
     data_freshness_date: Date.new(2017, 8, 9),
     description: "Snapshot of the Mayor’s Office of Housing and Community Development (MOHCD) and the Office of Community Investment and Infrastructure (OCII) affordable housing pipeline projects. The projects listed are in the process of development--or are anticipated to be developed--in partnership with non-profit or for-profit developers and financed through city funding agreements, ground leases, disposition and participation agreements and conduit bond financing. The Affordable Housing Pipeline also includes housing units produced by private developers through the Inclusionary Affordable Housing Program. Data reflects all projects as of FY2016-17.",
-    json_endpoint: "https://data.sfgov.org/resource/e2px-wugd.json"
+    json_endpoint: "https://data.sfgov.org/resource/e2px-wugd.json",
+    unique_identifier_column_name: "project_id"
   },
   {
     title: "Assessor Historical Secured Property Tax Rolls",
@@ -25,7 +26,8 @@ data_sources = [
     date_downloaded: Date.new(2018, 1, 24),
     data_freshness_date: Date.new(2017, 8, 17),
     description: "This data set includes the Office of the Assessor-Recorder’s secured property tax roll spanning from 2007 to 2016. It includes all legally disclosable information, including location of property, value of property, the unique property identifier, and specific property characteristics. The data is used to accurately and fairly appraise all taxable property in the City and County of San Francisco. The Office of the Assessor-Recorder makes no representation or warranty that the information provided is accurate and/or has no errors or omissions. Please see the attached documentation under About for more.",
-    json_endpoint: "https://data.sfgov.org/resource/fk72-cxc3.json"
+    json_endpoint: "https://data.sfgov.org/resource/fk72-cxc3.json",
+    unique_identifier_column_name: "block_and_lot_number"
   },
   {
     title: "Buyout agreements",
@@ -35,7 +37,8 @@ data_sources = [
     date_downloaded: Date.new(2018, 1, 24),
     data_freshness_date: Date.new(2017, 12, 28),
     description: "Contains buyout declarations and buyout agreements filed at the Rent Board. Rent Ordinance Section 37.9E, effective March 7, 2015, is a new provision that regulates 'buyout agreements' between landlords and tenants under which landlords pay tenants money or other consideration to vacate their rent-controlled rental units. For more information, please see: http://sfrb.org/new-ordinance-amendment-regulating-buyout-agreements",
-    json_endpoint: "https://data.sfgov.org/resource/e27i-hcy4.json"
+    json_endpoint: "https://data.sfgov.org/resource/e27i-hcy4.json",
+    unique_identifier_column_name: "case_number"
   },
   {
     title: "Eviction Notices",
@@ -45,7 +48,8 @@ data_sources = [
     date_downloaded: Date.new(2018, 1, 24),
     data_freshness_date: Date.new(2017, 12, 28),
     description: "Data includes eviction notices filed with the San Francisco Rent Board per San Francisco Administrative Code 37.9(c). A notice of eviction does not necessarily indicate that the tenant was eventually evicted, so the notices below may differ from actual evictions. Notices are published since January 1, 1997.",
-    json_endpoint: "https://data.sfgov.org/resource/93gi-sfd2.json"
+    json_endpoint: "https://data.sfgov.org/resource/93gi-sfd2.json",
+    unique_identifier_column_name: "eviction_id"
   },
   {
     title: "Building Permits",
@@ -55,8 +59,12 @@ data_sources = [
     date_downloaded: Date.new(2018, 1, 24),
     data_freshness_date: Date.new(2018, 1, 20),
     description: "This data set pertains to all types of structural permits. Data includes details on application/permit numbers, job addresses, supervisorial districts, and the current status of the applications. Data is uploaded weekly by DBI. Users can access permit information online through DBI’s Permit Tracking System which is 24/7 at www.sfdbi.org/dbipts.",
-    json_endpoint: "https://data.sfgov.org/resource/vy2q-29it.json"
+    json_endpoint: "https://data.sfgov.org/resource/vy2q-29it.json",
+    unique_identifier_column_name: "record_id"
   },
 ]
 
-DataSource.create(data_sources)
+data_sources.each do |data_source|
+  d = DataSource.where(title: data_source[:title]).first_or_initialize
+  d.update(data_source)
+end
