@@ -1,0 +1,16 @@
+<h5>New Query</h5>
+
+<% if flash.notice %>
+  <div style="color: red;margin: 10px 0px;"><%= flash.notice %></div>
+<% end %>
+
+<%= form_tag('queries/run_query', method: :post) do %>
+  <%= text_area_tag :query, new_query.query %>
+  <%= submit_tag "Run query" %>
+
+  <% if flash.notice %>
+    <%= submit_tag "Save query", hidden: true %>
+  <% else %>
+    <%= submit_tag "Save query", formaction: queries_path(new_query) %>
+  <% end %>
+<% end %>
