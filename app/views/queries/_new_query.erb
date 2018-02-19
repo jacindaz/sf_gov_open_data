@@ -4,7 +4,7 @@
   <div style="color: red;margin: 10px 0px;"><%= flash.notice %></div>
 <% end %>
 
-<%= form_tag('queries/run_query', method: :post) do %>
+<%= form_tag(run_query_queries_path, method: :post) do %>
   <%= text_area_tag :query, new_query.query %>
   <%= submit_tag "Run query" %>
 

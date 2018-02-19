@@ -1,0 +1,23 @@
+<h4>Query Results</h4>
+<i><%= @running_query.query %></i>
+
+<table>
+  <thead>
+    <tr>
+      <% @results.columns.each do |col_name| %>
+        <th><%= col_name %></th>
+      <% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <% @results.rows.each do |row| %>
+      <tr>
+        <% row.each do |value| %>
+          <td><%= value %></td>
+        <% end %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= render partial: 'new_query', locals: { new_query: Query.new } %>
