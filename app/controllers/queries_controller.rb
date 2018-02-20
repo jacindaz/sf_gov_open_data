@@ -27,10 +27,14 @@ class QueriesController < ApplicationController
   end
 
   def run_query
-    @running_query = Query.new(query: query_params, results: [])
+    if params[:query]
+      @running_query = Query.find(params[:query])
+    else
+      @running_query = Query.new(query: query_params, results: [])
+    end
 
     begin
-      results = ActiveRecord::Base.connection.exec_query(query_params)
+      results = ActiveRecord::Base.connection.exec_query(@running_query.query)
     rescue ActiveRecord::StatementInvalid
       results = nil
       flash[:notice] = "Query syntax is invalid."

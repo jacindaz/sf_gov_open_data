@@ -3,7 +3,6 @@ Rails.application.routes.draw do
   root to: "queries#index"
   resources :eviction_notices, only: [:index, :show]
 
-  resources :queries, only: [:index, :show, :create] do
-    collection { post :run_query }
-  end
+  resources :queries, only: [:index, :show, :create]
+  post "/run_query" => "queries#run_query"
 end

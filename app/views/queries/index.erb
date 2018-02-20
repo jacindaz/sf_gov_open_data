@@ -15,7 +15,7 @@
     <% @queries.each do |query| %>
       <tr>
         <td><%= query.id %></td>
-        <td><%= query.query %></td>
+        <td><%= link_to query.query, run_query_path(query: query), method: :post %></td>
         <td><%= query.created_at %></td>
         <td><%= query.updated_at %></td>
       </tr>
