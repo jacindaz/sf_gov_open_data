@@ -4,13 +4,13 @@
   <div style="color: red;margin: 10px 0px;"><%= flash.notice %></div>
 <% end %>
 
-<%= form_tag(run_query_path, method: :post) do %>
-  <%= text_area_tag :query, new_query.query %>
-  <%= submit_tag "Run query" %>
+<%= form_for @new_query, url: run_query_path do |f| %>
+  <%= f.text_area :query %>
+  <%= f.submit "Run query", name: "commit" %>
 
   <% if flash.notice %>
-    <%= submit_tag "Save query", hidden: true %>
+    <%= f.submit "Save query", hidden: true %>
   <% else %>
-    <%= submit_tag "Save query", formaction: queries_path(new_query) %>
+    <%= f.submit "Save query" %>
   <% end %>
 <% end %>

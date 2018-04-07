@@ -1,11 +1,4 @@
 class QueriesController < ApplicationController
-  # MIGRATION PLAN
-  # => move 1 action at a time
-  # => tests!!! run for each change
-  # => make controller/view work for only eviction notices
-  # => then make controller/view work for all tables
-  # => then fix rendering to be more flexible for query results
-
   def index
     @queries = Query.all
     @new_query = Query.new
@@ -20,24 +13,17 @@ class QueriesController < ApplicationController
 
     new_query = Query.new(query: query_params, results: row_ids)
     if new_query.save!
-      redirect_to eviction_notice_path(new_query)
+      redirect_to queries_path
     else
-      render "eviction_notices/index", notice: "Query could not be executed!"
+      render :index, notice: "Query could not be executed!"
     end
   end
 
   def run_query
-    if params[:query]
-      @running_query = Query.find(params[:query])
-    else
-      @running_query = Query.new(query: query_params, results: [])
-    end
-
-    begin
-      results = ActiveRecord::Base.connection.exec_query(@running_query.query)
-    rescue ActiveRecord::StatementInvalid
-      results = nil
-      flash[:notice] = "Query syntax is invalid."
+    if params[:commit] == "Run query"
+      @running_query = Query.new(query_params)
+    elsif params[:commit] == "persisted_query"
+      @running_query = Query.find(params[:query][:id])
     end
 
     if !valid_query
@@ -53,10 +39,8 @@ class QueriesController < ApplicationController
     end
   end
 
-  private
-
   def query_params
-    params[:query]
+    params.require(:query).permit(:query)
   end
 
   def valid_query
