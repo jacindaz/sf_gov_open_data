@@ -11,6 +11,6 @@
   <% if flash.notice %>
     <%= f.submit "Save query", hidden: true %>
   <% else %>
-    <%= f.submit "Save query" %>
+    <%= f.submit "Save query", formaction: queries_path(@new_query) %>
   <% end %>
 <% end %>

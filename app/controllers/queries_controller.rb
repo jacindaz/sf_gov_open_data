@@ -8,14 +8,29 @@ class QueriesController < ApplicationController
   end
 
   def create
-    results = ActiveRecord::Base.connection.exec_query(query_params)
-    row_ids = results.rows.map(&:first)
+    @saved_query = Query.new(query_params)
 
-    new_query = Query.new(query: query_params, results: row_ids)
-    if new_query.save!
-      redirect_to queries_path
+    if !valid_query(query_params[:query])
+      flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be saved."
+      @new_query = Query.new
+      @queries = Query.all
+      render :index
     else
-      render :index, notice: "Query could not be executed!"
+      begin
+        results = ActiveRecord::Base.connection.exec_query(query_params[:query])
+      rescue Exception => e
+        flash[:notice] = e.message
+        @new_query = Query.new(query_params)
+        @queries = Query.all
+        render :index
+      else
+        if @saved_query.save!
+          redirect_to query_path(@saved_query)
+        else
+          @new_query = Query.new(query_params)
+          render :index, notice: "Query could not be saved!"
+        end
+      end
     end
   end
 
@@ -26,7 +41,7 @@ class QueriesController < ApplicationController
       @running_query = Query.find(params[:query][:id])
     end
 
-    if !valid_query
+    if !valid_query(@running_query.query)
       flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
       @queries = Query.all
       @new_query = Query.new(query: params[:query][:query])
@@ -53,8 +68,8 @@ class QueriesController < ApplicationController
     params.require(:query).permit(:query)
   end
 
-  def valid_query
-    Query::INVALID_SQL.none?{ |invalid| query_params["query"].include?(invalid) }
+  def valid_query(query)
+    Query::INVALID_SQL.none?{ |invalid| query.include?(invalid) }
   end
 
   def clean_up_query
