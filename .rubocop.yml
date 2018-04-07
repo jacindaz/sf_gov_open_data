@@ -262,13 +262,13 @@ Lint/BooleanSymbol:
 Lint/CircularArgumentReference:
   Enabled: true
 
-Lint/ConditionPosition:
+Layout/ConditionPosition:
   Enabled: true
 
 Lint/Debugger:
   Enabled: true
 
-Lint/DefEndAlignment:
+Layout/DefEndAlignment:
   Enabled: true
 
 Lint/DeprecatedClassMethods:
@@ -301,7 +301,7 @@ Lint/EmptyInterpolation:
 Lint/EmptyWhen:
   Enabled: true
 
-Lint/EndAlignment:
+Lahout/EndAlignment:
   Enabled: false
 
 Lint/EndInMethod:
@@ -545,9 +545,6 @@ Performance/FixedSize:
   Enabled: true
 
 Performance/FlatMap:
-  Enabled: true
-
-Performance/HashEachMethods:
   Enabled: true
 
 Performance/LstripRstrip:
@@ -1100,7 +1097,7 @@ Style/SymbolLiteral:
 Style/TrailingCommaInArguments:
   Enabled: false
 
-Style/TrailingCommaInLiteral:
+Style/TrailingCommaInArrayLiteral:
   Enabled: false
 
 Style/TrailingUnderscoreVariable:
