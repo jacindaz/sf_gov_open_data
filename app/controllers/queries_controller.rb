@@ -34,8 +34,22 @@ class QueriesController < ApplicationController
       @queries = []
       render :index
     else
-      @results = results
-      render :show
+      begin
+        results = ActiveRecord::Base.connection.exec_query(@running_query.query)
+      rescue Exception => e
+        results = nil
+        flash[:notice] = e.message
+
+        @queries = Query.all
+        @new_query = Query.new(query: params[:query][:query])
+
+        render :index
+      else
+        @new_query = Query.new
+        @results = results
+        render :show
+      end
+
     end
   end
 
