@@ -27,11 +27,12 @@ class QueriesController < ApplicationController
     end
 
     if !valid_query
+      results = nil
       flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
-      @queries = []
-      render :index
-    elsif results.nil?
-      @queries = []
+
+      @queries = Query.all
+      @new_query = Query.new(query: params[:query][:query])
+
       render :index
     else
       begin
@@ -58,8 +59,10 @@ class QueriesController < ApplicationController
   end
 
   def valid_query
-    # hmm, should i sanitize by not allowing drop/delete
-    # or sanitize by only allowing selects/with/etc ??
-    Query::INVALID_SQL.none?{ |invalid| query_params.include?(invalid) }
+    Query::INVALID_SQL.none?{ |invalid| query_params["query"].include?(invalid) }
+  end
+
+  def clean_up_query
+    # remove \t and \n
   end
 end
