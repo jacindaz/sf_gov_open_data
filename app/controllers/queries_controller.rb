@@ -29,7 +29,6 @@ class QueriesController < ApplicationController
     if !valid_query
       results = nil
       flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
-
       @queries = Query.all
       @new_query = Query.new(query: params[:query][:query])
 
@@ -40,7 +39,6 @@ class QueriesController < ApplicationController
       rescue Exception => e
         results = nil
         flash[:notice] = e.message
-
         @queries = Query.all
         @new_query = Query.new(query: params[:query][:query])
 
