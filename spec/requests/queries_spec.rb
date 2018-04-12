@@ -10,30 +10,30 @@ RSpec.describe "Queries", type: :request do
 
   describe "GET#run_query" do
     it "successfully runs a valid persisted query, no DML in SQL" do
-      valid_query = create :valid_query
+      happy_path_query = create :valid_query
 
-      post run_query_path(query: valid_query.attributes, commit: "persisted_query")
+      post run_query_path(query: happy_path_query.attributes, commit: "persisted_query")
       expect(response).to have_http_status(200)
     end
 
     it "successfully runs valid un-persisted query, no DML in SQL" do
-      valid_query = build :valid_query
+      happy_path_query = build :valid_query
 
-      post run_query_path(query: valid_query.attributes, commit: "Run query")
+      post run_query_path(query: happy_path_query.attributes, commit: "Run query")
       expect(response).to have_http_status(200)
     end
 
     it "returns an error when persisted query contains DML commands" do
-      invalid_query = create :invalid_query
-      post run_query_path(query: invalid_query.attributes, commit: "persisted_query")
+      query_contains_dml = create :invalid_query
+      post run_query_path(query: query_contains_dml.attributes, commit: "persisted_query")
 
       expect(response).to have_http_status(200)
       expect(response.body).to include("cannot be run")
     end
 
     it "returns an error when un-persisted query contains DML commands" do
-      invalid_query = build :invalid_query
-      post run_query_path(query: invalid_query.attributes, commit: "Run query")
+      query_contains_dml = build :invalid_query
+      post run_query_path(query: query_contains_dml.attributes, commit: "Run query")
 
       expect(response).to have_http_status(200)
       expect(response.body).to include("cannot be run")
