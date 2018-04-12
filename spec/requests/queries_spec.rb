@@ -24,7 +24,7 @@ RSpec.describe "Queries", type: :request do
     end
 
     it "returns an error when persisted query contains DML commands" do
-      query_contains_dml = create :invalid_query
+      query_contains_dml = create :query_with_dml
       post run_query_path(query: query_contains_dml.attributes, commit: "persisted_query")
 
       expect(response).to have_http_status(200)
@@ -32,7 +32,7 @@ RSpec.describe "Queries", type: :request do
     end
 
     it "returns an error when un-persisted query contains DML commands" do
-      query_contains_dml = build :invalid_query
+      query_contains_dml = build :query_with_dml
       post run_query_path(query: query_contains_dml.attributes, commit: "Run query")
 
       expect(response).to have_http_status(200)
@@ -40,7 +40,7 @@ RSpec.describe "Queries", type: :request do
     end
 
     it "returns an error when persisted query contains error" do
-      invalid_sql = create :invalid_query, query: "select id from nonexistant_table limit 2;"
+      invalid_sql = create :invalid_query
       post run_query_path(query: invalid_sql.attributes, commit: "persisted_query")
 
       expect(response).to have_http_status(200)
@@ -48,7 +48,7 @@ RSpec.describe "Queries", type: :request do
     end
 
     it "returns an error when un-persisted query contains errory" do
-      invalid_sql = build :invalid_query, query: "select id from nonexistant_table limit 2;"
+      invalid_sql = build :invalid_query
       post run_query_path(query: invalid_sql.attributes, commit: "Run query")
 
       expect(response).to have_http_status(200)
