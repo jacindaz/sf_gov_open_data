@@ -1,4 +1,6 @@
 class QueriesController < ApplicationController
+  protect_from_forgery except: :index
+
   def index
     @queries = Query.all
     @new_query = Query.new
