@@ -64,5 +64,21 @@ RSpec.describe "Queries", type: :request do
       saved_query = Query.find_by_query(valid_query.query)
       expect(response).to redirect_to(query_path(saved_query))
     end
+
+    it "should not save + return an error for queries with DML commands" do
+      query_with_dml = build :query_with_dml
+      post queries_path(query: query_with_dml.attributes)
+
+      expect(response).to have_http_status(200)
+      expect(response.body).to include("cannot be saved")
+    end
+
+    it "should not save + return an error for invalid queries" do
+      invalid_query = build :invalid_query
+      post queries_path(query: invalid_query.attributes)
+
+      expect(response).to have_http_status(200)
+      expect(response.body).to include("PG::UndefinedTable: ERROR")
+    end
   end
 end

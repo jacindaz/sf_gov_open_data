@@ -10,7 +10,7 @@ class QueriesController < ApplicationController
   def create
     @saved_query = Query.new(query_params)
 
-    if !query_contains_dml(query_params[:query])
+    if query_contains_dml(query_params[:query])
       flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be saved."
       @new_query = Query.new
       @queries = Query.all
@@ -19,6 +19,8 @@ class QueriesController < ApplicationController
       begin
         results = ActiveRecord::Base.connection.exec_query(query_params[:query])
       rescue Exception => e
+        ActiveRecord::Base.connection.execute "ROLLBACK"
+
         flash[:notice] = e.message
         @new_query = Query.new(query_params)
         @queries = Query.all
@@ -41,7 +43,7 @@ class QueriesController < ApplicationController
       @running_query = Query.find(params[:query][:id])
     end
 
-    if !query_contains_dml(@running_query.query)
+    if query_contains_dml(@running_query.query)
       flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
       @queries = Query.all
       @new_query = Query.new(query: params[:query][:query])
@@ -51,11 +53,11 @@ class QueriesController < ApplicationController
       begin
         results = ActiveRecord::Base.connection.exec_query(@running_query.query)
       rescue Exception => e
-        ActiveRecord::Base.connection.execute 'ROLLBACK'
+        ActiveRecord::Base.connection.execute "ROLLBACK"
 
         flash[:notice] = e.message
         @queries = Query.all
-        @new_query = Query.new(query: params[:query][:query])
+        @new_query = Query.new(query: query_params)
 
         render :index
       else
@@ -71,7 +73,7 @@ class QueriesController < ApplicationController
   end
 
   def query_contains_dml(query)
-    Query::INVALID_SQL.none?{ |invalid| query.include?(invalid) }
+    Query::INVALID_SQL.any?{ |invalid| query.include?(invalid) }
   end
 
   def clean_up_query
