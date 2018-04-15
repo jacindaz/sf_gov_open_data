@@ -13,20 +13,13 @@ class QueriesController < ApplicationController
     @saved_query = Query.new(query_params)
 
     if query_contains_dml(query_params[:query])
-      flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be saved."
-      @new_query = Query.new
-      @queries = Query.all
-      render :index
+      invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be saved.")
     else
       begin
         results = ActiveRecord::Base.connection.exec_query(query_params[:query])
       rescue Exception => e
         ActiveRecord::Base.connection.execute "ROLLBACK"
-
-        flash[:notice] = e.message
-        @new_query = Query.new(query_params)
-        @queries = Query.all
-        render :index
+        invalid_query_error_instance_vars(e.message)
       else
         if @saved_query.save!
           redirect_to query_path(@saved_query)
@@ -46,22 +39,13 @@ class QueriesController < ApplicationController
     end
 
     if query_contains_dml(@running_query.query)
-      flash[:notice] = "#{Query::INVALID_SQL.join(', ')} statements cannot be run."
-      @queries = Query.all
-      @new_query = Query.new(query: params[:query][:query])
-
-      render :index
+      invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be run.")
     else
       begin
         results = ActiveRecord::Base.connection.exec_query(@running_query.query)
       rescue Exception => e
         ActiveRecord::Base.connection.execute "ROLLBACK"
-
-        flash[:notice] = e.message
-        @queries = Query.all
-        @new_query = Query.new(query: query_params)
-
-        render :index
+        invalid_query_error_instance_vars(e.message)
       else
         @new_query = Query.new
         @results = results
@@ -70,12 +54,21 @@ class QueriesController < ApplicationController
     end
   end
 
+  private
+
   def query_params
     params.require(:query).permit(:query)
   end
 
   def query_contains_dml(query)
     Query::INVALID_SQL.any?{ |invalid| query.include?(invalid) }
+  end
+
+  def invalid_query_error_instance_vars(error_message)
+    flash[:notice] = error_message
+    @new_query = Query.new(query_params)
+    @queries = Query.all
+    render :index
   end
 
   def clean_up_query
