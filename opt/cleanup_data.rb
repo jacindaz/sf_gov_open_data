@@ -5,12 +5,13 @@ class CleanupData
   def initialize(database_name, table_name)
     @connection = PG.connect(dbname: database_name)
     @table_name = table_name
+    @columns = get_text_columns
   end
 
   def perform
-    get_text_columns.each { |column_name| alter_column_to_bool(column_name) }
-    get_text_columns.each { |column_name| alter_column_to_int(column_name) }
-    get_text_columns.each { |column_name| alter_column_to_date(column_name) }
+    @columns.each { |column_name| alter_column_to_bool(column_name) }
+    @columns.each { |column_name| alter_column_to_int(column_name) }
+    @columns.each { |column_name| alter_column_to_date(column_name) }
   end
 
   def alter_column_to_bool(column_name)
