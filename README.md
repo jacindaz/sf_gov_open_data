@@ -11,6 +11,11 @@ https://datasf.org/showcase/
 * switch to using new bundler filenames, Gemfile => gems.rb, Gemfile.lock => gems.locked
 (https://depfu.com/blog/2017/09/06/gemfiles-new-clothes)
 
+## To Do's for making query editor work:
+* persisted/un-persisted
+* disallow DDL (data definition language) commands, like drop, alter, create
+* valid/invalid query: return errors from postgres
+* run/save query with any of the combination above
 
 ## To Do's
 * add indexes!!!

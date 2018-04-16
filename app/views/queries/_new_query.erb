@@ -1,0 +1,16 @@
+<h5>New Query</h5>
+
+<% if flash.notice %>
+  <div style="color: red;margin: 10px 0px;"><%= flash.notice %></div>
+<% end %>
+
+<%= form_for @new_query, url: run_query_path do |f| %>
+  <%= f.text_area :query %>
+  <%= f.submit "Run query", name: "commit" %>
+
+  <% if flash.notice %>
+    <%= f.submit "Save query", hidden: true %>
+  <% else %>
+    <%= f.submit "Save query", formaction: queries_path(@new_query) %>
+  <% end %>
+<% end %>
