@@ -9,16 +9,28 @@ class CleanupData
   end
 
   def perform
-    @columns.each { |column_name| alter_column_to_bool(column_name) }
-    @columns.each { |column_name| alter_column_to_int(column_name) }
-    @columns.each { |column_name| alter_column_to_date(column_name) }
+    if @columns.any?
+      @columns.each do |column_name|
+        column_values_strings = column_values(column_name)
+
+        if column_values_strings.any?
+          if alter_column_to_bool(column_name, column_values_strings)
+            next
+          elsif alter_column_to_int(column_name, column_values_strings)
+            next
+          elsif alter_column_to_date(column_name, column_values_strings)
+            next
+          end
+        else
+          next
+        end
+      end
+    end
   end
 
-  def alter_column_to_bool(column_name)
+  def alter_column_to_bool(column_name, strings_maybe_bool)
     possible_boolean_strings = ["FALSE", "false", "f", "TRUE", "true", "t"]
-    boolean_strings = column_values(column_name)
-
-    is_bool_column = boolean_strings.any?{ |x| possible_boolean_strings.include?(x) }
+    is_bool_column = strings_maybe_bool.any?{ |x| possible_boolean_strings.include?(x) }
 
     if is_bool_column
       alter_and_update = "
@@ -32,16 +44,20 @@ class CleanupData
       "
       @connection.exec(alter_and_update)
       puts "Updated column #{column_name} to boolean column."
+      @columns.delete(column_name)
+      return true
     else
       puts "Didn't update anything, #{column_name} is not a boolean column.\n"
     end
+
+    is_bool_column
   end
 
-  def alter_column_to_int(column_name)
-    strings_maybe_integers = column_values(column_name)
+  def alter_column_to_int(column_name, strings_maybe_integers)
     column_type = calculate_integer_lengths(strings_maybe_integers)
+    is_integer_column = integer_column?(strings_maybe_integers)
 
-    if integer_column?(strings_maybe_integers)
+    if is_integer_column
       alter_and_update = "ALTER TABLE #{@table_name}
                           ALTER #{column_name} TYPE #{column_type}
                           USING
@@ -50,15 +66,17 @@ class CleanupData
                           END"
       @connection.exec(alter_and_update)
       puts "Updated column #{column_name} to integer column."
+      @columns.delete(column_name)
     else
       puts "Didn't update anything, #{column_name} is not an integer column.\n"
     end
+
+    is_integer_column
   end
 
-  def alter_column_to_date(column_name)
-    strings_maybe_dates = column_values(column_name)
-
-    if date_column?(strings_maybe_dates, column_name)
+  def alter_column_to_date(column_name, strings_maybe_dates)
+    is_date_column = date_column?(strings_maybe_dates, column_name)
+    if is_date_column
       alter_and_update = "ALTER TABLE #{@table_name}
                           ALTER #{column_name} TYPE date
                           USING
@@ -67,9 +85,12 @@ class CleanupData
                           END"
       @connection.exec(alter_and_update)
       puts "Updated column #{column_name} to date column."
+      @columns.delete(column_name)
     else
       puts "Didn't update anything, #{column_name} is not a date column.\n"
     end
+
+    is_date_column
   end
 
   private
