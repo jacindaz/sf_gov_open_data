@@ -75,7 +75,7 @@ class CleanupData
   end
 
   def alter_column_to_date(column_name, strings_maybe_dates)
-    is_date_column = date_column?(strings_maybe_dates, column_name)
+    is_date_column = date_column?(strings_maybe_dates)
     if is_date_column
       alter_and_update = "ALTER TABLE #{@table_name}
                           ALTER #{column_name} TYPE date
@@ -116,45 +116,24 @@ class CleanupData
     values.all?{ |string| true if Integer(string) rescue false }
   end
 
-  def date_column?(values, column_name)
-    length10 = values.all?{ |string| true if string.length == 10 }
+  def date_column?(values)
+    value_matches = []
+    values.each do |value|
+      ["-", ".", "/"].each do |delimiter|
+        matched_string = /\d\d\d\d#{delimiter}\d\d#{delimiter}\d\d/.match(value).to_s
 
-    if length10
-      if contains_delimiter(values)
-        date_without_delimiters_is_integer(values)
-      else
-        return false
+        if matched_string
+          if matched_string.length == 10
+            value_matches << true
+            break
+          end
+        end
+
+        value_matches << false
       end
-    else
-      return false
-    end
-  end
-
-  def date_without_delimiters_is_integer(values)
-    non_integers = []
-    is_integer = values.all? do |string|
-      string = string[1..-1] if string[0] == "0"
-      Integer(remove_delimiter_from_date(string)) ? true : non_integers << string
     end
 
-    if is_integer
-      true
-    else
-      puts "Not a date column, these were not dates: #{non_integers.join(', ')}"
-      false
-    end
-  end
-
-  def contains_delimiter(values)
-    values.all? do |string|
-      string.count("/") == 2 || string.count("-") == 2 || string.count(".") == 2
-    end
-  end
-
-  def remove_delimiter_from_date(date_string)
-    date_string.delete!("/")
-    date_string.delete!("-")
-    date_string.delete!(".")
+    value_matches.all?(true)
   end
 
   def calculate_integer_lengths(values)
