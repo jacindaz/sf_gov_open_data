@@ -7,12 +7,15 @@ class QueriesController < ApplicationController
   end
 
   def show
+    @running_query = Query.find(params[:id])
+    @results = @running_query.execute_query
+    @new_query = Query.new
   end
 
   def create
-    @saved_query = Query.new(query_params)
+    @query_to_save = Query.new(query_params)
 
-    if query_contains_dml(query_params[:query])
+    if @query_to_save.query_contains_dml
       invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be saved.")
     else
       begin
@@ -21,8 +24,8 @@ class QueriesController < ApplicationController
         ActiveRecord::Base.connection.execute "ROLLBACK"
         invalid_query_error_instance_vars(e.message)
       else
-        if @saved_query.save!
-          redirect_to query_path(@saved_query)
+        if @query_to_save.save!
+          redirect_to query_path(@query_to_save)
         else
           @new_query = Query.new(query_params)
           render :index, notice: "Query could not be saved!"
@@ -34,11 +37,11 @@ class QueriesController < ApplicationController
   def run_query
     if params[:commit] == "Run query"
       @running_query = Query.new(query_params)
-    elsif params[:commit] == "persisted_query"
+    else
       @running_query = Query.find(params[:query][:id])
     end
 
-    if query_contains_dml(@running_query.query)
+    if @running_query.query_contains_dml
       invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be run.")
     else
       begin
@@ -58,10 +61,6 @@ class QueriesController < ApplicationController
 
   def query_params
     params.require(:query).permit(:query)
-  end
-
-  def query_contains_dml(query)
-    Query::INVALID_SQL.any?{ |invalid| query.include?(invalid) }
   end
 
   def invalid_query_error_instance_vars(error_message)

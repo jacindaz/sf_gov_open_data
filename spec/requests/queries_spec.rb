@@ -81,4 +81,13 @@ RSpec.describe "Queries", type: :request do
       expect(response.body).to include("PG::UndefinedTable: ERROR")
     end
   end
+
+  describe "GET#show" do
+    it "should successfully display saved queries" do
+      happy_path_query = create :valid_query
+
+      get query_path(happy_path_query)
+      expect(response).to have_http_status(200)
+    end
+  end
 end
