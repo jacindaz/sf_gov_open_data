@@ -19,7 +19,7 @@ class QueriesController < ApplicationController
       invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be saved.")
     else
       begin
-        results = ActiveRecord::Base.connection.exec_query(query_params[:query])
+        ActiveRecord::Base.connection.exec_query(query_params[:query])
       rescue Exception => e
         ActiveRecord::Base.connection.execute "ROLLBACK"
         invalid_query_error_instance_vars(e.message)
