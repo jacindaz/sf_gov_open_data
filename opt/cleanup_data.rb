@@ -137,13 +137,14 @@ class CleanupData
   end
 
   def calculate_integer_lengths(values)
-    max_bits = values.max{ |string| string.to_i.to_s(2).length }.length
+    max_binary = values.max.to_i.to_s(2).length.to_f
+    max_bytes = max_binary/8
 
-    if max_bits <= 2
+    if max_bytes <= 2
       "smallint"
-    elsif max_bits <= 4
+    elsif max_bytes <= 4
       "integer"
-    elsif max_bits <= 8
+    elsif max_bytes <= 8
       "bigint"
     end
   end
