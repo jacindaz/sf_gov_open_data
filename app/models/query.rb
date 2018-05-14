@@ -2,7 +2,7 @@ class Query < ApplicationRecord
   INVALID_SQL = ["drop", "delete"]
 
   def execute_query
-    if query_contains_dml
+    if query_contains_ddl
       invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be executed.")
     else
       begin
@@ -16,7 +16,7 @@ class Query < ApplicationRecord
     results
   end
 
-  def query_contains_dml
+  def query_contains_ddl
     INVALID_SQL.any?{ |invalid| query.include?(invalid) }
   end
 end
