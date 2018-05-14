@@ -1,9 +1,9 @@
 class Query < ApplicationRecord
-  INVALID_SQL = ["drop", "delete"]
+  INVALID_SQL = ["alter", "drop", "delete"]
 
   def execute_query
     if query_contains_ddl
-      invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be executed.")
+      invalid_query_error_instance_vars("DDL statements such as #{Query::INVALID_SQL.join(', ')} cannot be executed.")
     else
       begin
         results = ActiveRecord::Base.connection.exec_query(query)
