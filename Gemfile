@@ -40,7 +40,7 @@ gem 'jbuilder', '~> 2.5'
 # gem 'capistrano-rails', group: :development
 gem 'sidekiq'
 gem 'kaminari'
-gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
+gem "elasticsearch-persistence"
 
 group :development, :test do
   gem 'pry'
@@ -57,8 +57,10 @@ group :development do
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
 
-  # Hrmm: do I need this?
   # gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'listen', '~> 3.7.0'
+
+  # Hrmm: do I need this?
   # gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
