@@ -22,6 +22,7 @@ gem 'puma', '~> 4.3.8'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
+gem 'materialize-sass', '~> 0.100.2'
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'

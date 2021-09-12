@@ -15,7 +15,7 @@ class QueriesController < ApplicationController
   def create
     @query_to_save = Query.new(query_params)
 
-    if @query_to_save.query_contains_dml
+    if @query_to_save.query_contains_ddl
       invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be saved.")
     else
       begin
@@ -41,7 +41,7 @@ class QueriesController < ApplicationController
       @running_query = Query.find(params[:query][:id])
     end
 
-    if @running_query.query_contains_dml
+    if @running_query.query_contains_ddl
       invalid_query_error_instance_vars("#{Query::INVALID_SQL.join(', ')} statements cannot be run.")
     else
       begin
