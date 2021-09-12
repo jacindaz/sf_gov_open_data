@@ -12,7 +12,7 @@ AllCops:
     - 'lib/tasks/migrations/**/*'
   DisplayCopNames: true
   DisplayStyleGuide: true
-  TargetRubyVersion: 2.3.3
+  TargetRubyVersion: 2.6.6
   #
   # All cops are disabled by default.
   # They are individually enabled in the inherited files.
@@ -34,13 +34,13 @@ Gemspec/OrderedDependencies:
 Layout/AccessModifierIndentation:
   Enabled: true
 
-Layout/AlignArray:
+Layout/ArrayAlignment:
   Enabled: false
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: false
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: false
 
 # Layout/BlockEndNewline:
@@ -112,16 +112,16 @@ Layout/FirstMethodParameterLineBreak:
 # Layout/FirstParameterIndentation:
 #   Enabled: true
 
-Layout/IndentArray:
+Layout/FirstArrayElementIndentation:
   Enabled: false
 
-Layout/IndentAssignment:
+Layout/AssignmentIndentation:
   Enabled: true
 
-Layout/IndentHash:
+Layout/FirstHashElementIndentation:
   Enabled: false
 
-Layout/IndentHeredoc:
+Layout/HeredocIndentation:
   Enabled: true
 
 Layout/IndentationConsistency:
@@ -135,6 +135,9 @@ Layout/InitialIndentation:
 
 Layout/LeadingCommentSpace:
   Enabled: true
+
+Layout/LineLength:
+  Enabled: false
 
 Layout/MultilineArrayBraceLayout:
   Enabled: true
@@ -232,10 +235,10 @@ Layout/SpaceInsideRangeLiteral:
 Layout/SpaceInsideStringInterpolation:
   Enabled: true
 
-Layout/Tab:
+Layout/IndentationStyle:
   Enabled: true
 
-Layout/TrailingBlankLines:
+Layout/TrailingEmptyLines:
   Enabled: true
 
 Layout/TrailingWhitespace:
@@ -280,7 +283,7 @@ Lint/DuplicateCaseCondition:
 Lint/DuplicateMethods:
   Enabled: true
 
-Lint/DuplicatedKey:
+Lint/DuplicateHashKey:
   Enabled: true
 
 Lint/EachWithObjectArgument:
@@ -301,13 +304,16 @@ Lint/EmptyInterpolation:
 Lint/EmptyWhen:
   Enabled: true
 
-Lahout/EndAlignment:
+Layout/EndAlignment:
   Enabled: false
 
-Lint/EndInMethod:
+Style/EndBlock:
   Enabled: true
 
 Lint/EnsureReturn:
+  Enabled: true
+
+Lint/FlipFlop:
   Enabled: true
 
 Lint/FloatOutOfRange:
@@ -340,7 +346,7 @@ Lint/LiteralInInterpolation:
 Lint/Loop:
   Enabled: true
 
-Lint/MultipleCompare:
+Lint/MultipleComparison:
   Enabled: true
 
 Lint/NestedMethodDefinition:
@@ -400,7 +406,7 @@ Lint/ShadowedException:
 # Lint/ShadowingOuterLocalVariable:
 #   Enabled: true
 
-Lint/StringConversionInInterpolation:
+Lint/RedundantStringCoercion:
   Enabled: true
 
 # Lint/UnderscorePrefixedVariableName:
@@ -409,13 +415,13 @@ Lint/StringConversionInInterpolation:
 # Lint/UnifiedInteger:
 #   Enabled: true
 
-Lint/UnneededDisable:
+Lint/RedundantCopDisableDirective:
   Enabled: true
 
-Lint/UnneededRequireStatement:
+Lint/RedundantRequireStatement:
   Enabled: true
 
-Lint/UnneededSplatExpansion:
+Lint/RedundantSplatExpansion:
   Enabled: true
 
 Lint/UnreachableCode:
@@ -439,7 +445,7 @@ Lint/UselessAccessModifier:
 Lint/UselessAssignment:
   Enabled: true
 
-Lint/UselessComparison:
+Lint/BinaryOperatorWithIdenticalOperands:
   Enabled: true
 
 Lint/UselessElseWithoutRescue:
@@ -464,9 +470,6 @@ Metrics/ClassLength:
   Enabled: false
 
 Metrics/CyclomaticComplexity:
-  Enabled: false
-
-Metrics/LineLength:
   Enabled: false
 
 Metrics/MethodLength:
@@ -515,186 +518,6 @@ Naming/PredicateName:
 #   Enabled: true
 
 # Naming/VariableNumber:
-#   Enabled: true
-
-Performance/Caller:
-  Enabled: true
-
-Performance/CaseWhenSplat:
-  Enabled: true
-
-Performance/Casecmp:
-  Enabled: false
-
-Performance/CompareWithBlock:
-  Enabled: true
-
-Performance/Count:
-  Enabled: true
-
-Performance/Detect:
-  Enabled: true
-
-Performance/DoubleStartEndWith:
-  Enabled: true
-
-Performance/EndWith:
-  Enabled: true
-
-Performance/FixedSize:
-  Enabled: true
-
-Performance/FlatMap:
-  Enabled: true
-
-Performance/LstripRstrip:
-  Enabled: true
-
-Performance/RangeInclude:
-  Enabled: true
-
-# Performance/RedundantBlockCall:
-#   Enabled: true
-
-# Performance/RedundantMatch:
-#   Enabled: true
-
-Performance/RedundantMerge:
-  Enabled: true
-
-Performance/RedundantSortBy:
-  Enabled: true
-
-Performance/RegexpMatch:
-  Enabled: true
-
-Performance/ReverseEach:
-  Enabled: true
-
-Performance/Sample:
-  Enabled: true
-
-Performance/Size:
-  Enabled: true
-
-Performance/StartWith:
-  Enabled: true
-
-Performance/StringReplacement:
-  Enabled: true
-
-Performance/TimesMap:
-  Enabled: true
-
-# Performance/UnfreezeString:
-#   Enabled: true
-
-Performance/UriDefaultParser:
-  Enabled: true
-
-Rails:
-  Enabled: true
-
-# Rails/ActionFilter:
-#   Enabled: true
-
-Rails/ActiveSupportAliases:
-  Enabled: true
-
-Rails/ApplicationJob:
-  Enabled: true
-
-Rails/ApplicationRecord:
-  Enabled: true
-
-Rails/Blank:
-  Enabled: true
-
-# Rails/Date:
-#   Enabled: true
-
-# Rails/Delegate:
-#   Enabled: true
-
-Rails/DelegateAllowBlank:
-  Enabled: true
-
-# Rails/DynamicFindBy:
-#   Enabled: true
-
-Rails/EnumUniqueness:
-  Enabled: true
-
-Rails/Exit:
-  Enabled: true
-
-Rails/FilePath:
-  Enabled: false
-
-Rails/FindBy:
-  Enabled: true
-
-Rails/FindEach:
-  Enabled: true
-
-# Rails/HasAndBelongsToMany:
-#   Enabled: true
-
-# Rails/HasManyOrHasOneDependent:
-#   Enabled: true
-
-Rails/HttpPositionalArguments:
-  Enabled: false
-
-Rails/NotNullColumn:
-  Enabled: true
-
-# Rails/Output:
-#   Enabled: true
-
-# Rails/OutputSafety:
-#   Enabled: true
-
-Rails/PluralizationGrammar:
-  Enabled: true
-
-Rails/Present:
-  Enabled: true
-
-# Rails/ReadWriteAttribute:
-#   Enabled: true
-
-Rails/RelativeDateConstant:
-  Enabled: true
-
-Rails/RequestReferer:
-  Enabled: true
-
-Rails/ReversibleMigration:
-  Enabled: true
-
-Rails/SafeNavigation:
-  Enabled: true
-
-# Rails/SaveBang:
-#   Enabled: true
-
-Rails/ScopeArgs:
-  Enabled: true
-
-# Rails/SkipsModelValidations:
-#   Enabled: true
-
-# Rails/TimeZone:
-#   Enabled: true
-
-Rails/UniqBeforePluck:
-  Enabled: true
-
-Rails/UnknownEnv:
-  Enabled: true
-
-# Rails/Validation:
 #   Enabled: true
 
 Security/Eval:
@@ -824,9 +647,6 @@ Style/EndBlock:
   Enabled: true
 
 Style/EvenOdd:
-  Enabled: true
-
-Style/FlipFlop:
   Enabled: true
 
 # Style/For:
@@ -1109,13 +929,13 @@ Style/TrivialAccessors:
 Style/UnlessElse:
   Enabled: true
 
-Style/UnneededCapitalW:
+Style/RedundantCapitalW:
   Enabled: true
 
 # Style/UnneededInterpolation:
 #   Enabled: true
 
-Style/UnneededPercentQ:
+Style/RedundantPercentQ:
   Enabled: true
 
 Style/VariableInterpolation:

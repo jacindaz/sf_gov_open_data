@@ -48,6 +48,7 @@ group :development, :test do
   gem 'awesome_print'
   gem 'rspec-rails', '~> 3.6'
   gem "factory_bot_rails", "~> 4.0"
+  gem 'rubocop-rspec'
 end
 
 group :development do
