@@ -23,7 +23,13 @@ class ImportData
       json_columns = json_endpoint_columns(results)
 
       create_table(data_source.table_name, json_columns)
-      insert_or_update_rows(data_source, results)
+
+      begin
+        insert_or_update_rows(data_source, results)
+      rescue => e
+        puts "Oh no! We ran into an error:"
+        puts e
+      end
     end
 
     test_results

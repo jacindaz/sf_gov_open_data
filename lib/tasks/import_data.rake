@@ -10,5 +10,7 @@ end
 
 desc "Import JSON"
 task import_json: :environment do
-  ImportData.new("sf_gov_open_data_dev").process
+
+  db_name = Rails.configuration.database_configuration[Rails.env]["database"]
+  ImportData.new(db_name).process
 end
